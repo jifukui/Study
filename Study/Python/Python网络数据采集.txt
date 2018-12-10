@@ -1,0 +1,3 @@
+在Windows上通过py -2调用python2 py -3调用python3
+pip安装py -2 -m pip install xxx
+pip安装py -3 -m pip install xxx

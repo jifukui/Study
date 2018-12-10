@@ -1,0 +1,7 @@
+1.系统上安装python2和python3的时候会出现冲突的问题
+安装python3的时候会安装py 
+py -2 xxx.py 以python2版本运行程序
+py -3 xxx.py 以python3版本运行程序
+使用pip进行模块安装
+py -2 -m pip install xxxx   以python2安装模块
+py -3 -m pip install xxxx   以python3安装模块
