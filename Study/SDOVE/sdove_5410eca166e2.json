@@ -1,0 +1,804 @@
+{
+    "_id" : ObjectId("5c0a0c5ca124b135f448b6fc"),
+    "device_id" : "5410eca166e2",
+    "identity" : {
+        "engine" : "PLETHORA",
+        "vendor_id" : 0,
+        "product_id" : 0,
+        "firmware_comment" : "",
+        "firmware_version" : "3.3.1.0",
+        "firmware_rc" : "19",
+        "is_receiver" : false,
+        "is_transmitter" : true,
+        "firmware_details" : [ 
+            {
+                "type" : "PRIMARY",
+                "details_available" : false,
+                "firmware_version" : "0.0.0.0",
+                "firmware_rc" : "0"
+            }, 
+            {
+                "type" : "GOLDEN",
+                "details_available" : false,
+                "firmware_version" : "0.0.0.0",
+                "firmware_rc" : "0"
+            }
+        ]
+    },
+    "status" : {
+        "active" : true,
+        "point_to_point" : false,
+        "boot_status" : "UNKNOWN",
+        "update_in_progress" : false,
+        "error_status" : {
+            "has_error_code" : false,
+            "error_code" : 0
+        },
+        "temperature" : 67
+    },
+    "nodes" : [ 
+        {
+            "type" : "ANALOG_AUDIO_INPUT_OUTPUT",
+            "index" : 0,
+            "configuration" : {
+                "direction" : "INPUT"
+            },
+            "status" : {},
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 2,
+                            "choices" : [ 
+                                {
+                                    "value" : 2,
+                                    "description" : "HDMI Audio Local Loop Out (Downmix)",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "HDMI_DECODER",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 8,
+                                    "description" : "I2S Audio (Audio Return Channel)",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "I2S_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "HDMI_DECODER",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "BUTTON",
+            "index" : 0,
+            "configuration" : {
+                "action" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "No action",
+                            "details" : "NONE"
+                        }, 
+                        {
+                            "value" : 3,
+                            "description" : "Switch video input",
+                            "details" : "SWITCH_VIDEO_INPUT"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "BUTTON",
+            "index" : 1,
+            "configuration" : {
+                "action" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "No action",
+                            "details" : "NONE"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "FRAME_RATE_CONVERTER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "divide_factor" : 2
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "HDMI_DECODER",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 0,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 1,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 2,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 3,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 4,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 5,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 6,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 7,
+            "configuration" : {
+                "tristate" : 1,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 8,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 9,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 10,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 11,
+            "configuration" : {
+                "tristate" : 1,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 12,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 13,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 14,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "HDMI_DECODER",
+            "index" : 0,
+            "configuration" : {
+                "edid" : "00ffffffffffff000614000156524c420816010380341d780a01c1a057479827124c4c21080081400101010101010101010101010101023a801871382d40582c460040846300001e08e80030f2705a80b0588a00ba892100001e000000fc004170746f566973696f6e20200a000000fd0018550e853c000a202020202020012002034073580102030405111213141f2021220607905d5e5f6263646061230d0707830f00006d030c001000383c20406801020367d85dc401788003e40f0000c0011d00bc52d01e20b828554040846300001e023a80d072382d40102c458040846300001e023a801871382d40582c450040846300001e000000000000000000f2",
+                "hdcp_support_enable" : true,
+                "hdcp_22_support_disable" : false
+            },
+            "status" : {
+                "video" : {
+                    "width" : 0,
+                    "height" : 0,
+                    "frames_per_second" : 0,
+                    "color_space" : "RGB",
+                    "bits_per_pixel" : 8,
+                    "scan_mode" : "PROGRESSIVE"
+                },
+                "has_video_details" : true,
+                "video_details" : {
+                    "frame_rate" : 0,
+                    "pixel_clock" : 0,
+                    "total_width" : 0,
+                    "total_height" : 0,
+                    "hsync_width" : 0,
+                    "hsync_front_porch" : 0,
+                    "hsync_negative" : false,
+                    "vsync_width" : 0,
+                    "vsync_front_porch" : 0,
+                    "vsync_negative" : false,
+                    "vic" : 0,
+                    "has_hdmi_vic" : false,
+                    "hdmi_vic" : 0,
+                    "picture_aspect" : "ASPECT_NO_DATA",
+                    "has_active_format" : false,
+                    "active_format" : 0,
+                    "it_content_type" : "NO_DATA",
+                    "scan_information" : "NO_DATA",
+                    "colorimetry" : "RGB",
+                    "rgb_range" : "DEFAULT",
+                    "ycc_range" : "LIMITED"
+                },
+                "has_audio_details" : true,
+                "audio_details" : {
+                    "sampling_frequency" : 48000,
+                    "number_of_channels" : 2
+                },
+                "hdcp_protected" : false,
+                "hdcp_version" : "NONE",
+                "hdmi_2_0_support" : true,
+                "source_stable" : false,
+                "audio_downmix_support" : true
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 0,
+                            "choices" : [ 
+                                {
+                                    "value" : 0,
+                                    "description" : "HDMI Input 1",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "VIDEO_INPUT",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 1,
+                                    "description" : "Display Port Input 1",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "VIDEO_INPUT",
+                                        "ref_index" : 1
+                                    }
+                                }, 
+                                {
+                                    "value" : 32,
+                                    "description" : "Automatic Input Selection (HDMI Input 1)",
+                                    "details" : {
+                                        "ref_class" : "AUTOMATIC",
+                                        "ref_type" : null,
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "VIDEO_INPUT",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "INFRARED_ENCODER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "data_length_max" : 512
+            },
+            "inputs" : [ 
+                {
+                    "name" : "network",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "INFRARED",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "INFRARED_DECODER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "LED",
+            "index" : 0,
+            "configuration" : {
+                "function" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "(Unknown)",
+                            "details" : "UNKNOWN"
+                        }, 
+                        {
+                            "value" : 1,
+                            "description" : "Blink LED",
+                            "details" : "BLINK"
+                        }, 
+                        {
+                            "value" : 8,
+                            "description" : "Default functionality",
+                            "details" : "DEFAULT"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "NETWORK_INTERFACE",
+            "index" : 0,
+            "configuration" : {
+                "hostname" : "5410ECA166E2",
+                "ip" : {
+                    "address" : "192.168.0.11",
+                    "mode" : "DHCP",
+                    "mask" : "255.255.255.0",
+                    "gateway" : "192.168.0.1"
+                }
+            },
+            "status" : {
+                "mac_address" : "5410eca166e2",
+                "ip" : {
+                    "address" : "192.168.0.11"
+                }
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "NETWORK_SWITCH",
+            "index" : 0,
+            "configuration" : {
+                "gigabit_port_1_enable" : true
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "SCALER",
+            "index" : 0,
+            "configuration" : {
+                "width" : 0,
+                "height" : 0
+            },
+            "status" : {
+                "video" : {
+                    "width" : 0,
+                    "height" : 0,
+                    "frames_per_second" : 0,
+                    "color_space" : "RGB",
+                    "bits_per_pixel" : 8,
+                    "scan_mode" : "PROGRESSIVE"
+                }
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 0,
+                            "choices" : [ 
+                                {
+                                    "value" : 0,
+                                    "description" : "HDMI video input",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "HDMI_DECODER",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 1,
+                                    "description" : "Frame rate converter",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "FRAME_RATE_CONVERTER",
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "HDMI_DECODER",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "UART",
+            "index" : 0,
+            "configuration" : {
+                "baud_rate" : 115200,
+                "data_bits" : 8,
+                "stop_bits" : 1,
+                "parity" : "NONE"
+            },
+            "status" : {},
+            "inputs" : [ 
+                {
+                    "name" : "network",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "RS232",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "USB_ICRON_CHIP_LOCAL",
+            "index" : 0,
+            "configuration" : {
+                "extender_type" : "LOCAL",
+                "program_mode" : "NONE",
+                "rs232_port" : 0
+            },
+            "status" : {
+                "chip_present" : true,
+                "mac_address" : "001b44000002"
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "VIDEO_COMPRESSOR",
+            "index" : 0,
+            "configuration" : {
+                "always_compress" : false
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "VIDEO_INPUT",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "connector_type" : "HDMI"
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "VIDEO_INPUT",
+            "index" : 1,
+            "configuration" : {},
+            "status" : {
+                "connector_type" : "DISPLAY_PORT"
+            },
+            "inputs" : []
+        }
+    ],
+    "configuration" : {
+        "device_name" : "5410ECA166E2",
+        "locate_mode" : false
+    },
+    "streams" : [ 
+        {
+            "type" : "HDMI",
+            "index" : 0,
+            "configuration" : {
+                "address" : "224.1.1.3",
+                "enable" : false,
+                "auto_stop" : false,
+                "source" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "HDMI video input",
+                            "details" : {
+                                "ref_class" : "NODE",
+                                "ref_type" : "HDMI_DECODER",
+                                "ref_index" : 0
+                            }
+                        }, 
+                        {
+                            "value" : 1,
+                            "description" : "Frame rate converter",
+                            "details" : {
+                                "ref_class" : "NODE",
+                                "ref_type" : "FRAME_RATE_CONVERTER",
+                                "ref_index" : 0
+                            }
+                        }
+                    ]
+                }
+            },
+            "status" : {
+                "state" : "STOPPED"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "HDMI_DECODER",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 1,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "SCALER",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "HDMI_AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "224.1.1.5",
+                "enable" : true,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STREAMING"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "HDMI_DECODER",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "ANALOG_AUDIO_INPUT",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "RS232",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "UART",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "INFRARED",
+            "index" : 0,
+            "configuration" : {
+                "address" : "255.255.255.255",
+                "enable" : true,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STREAMING"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "INFRARED_DECODER",
+                "ref_index" : 0
+            }
+        }
+    ],
+    "subscriptions" : [ 
+        {
+            "type" : "I2S_AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "RS232",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }, 
+        {
+            "type" : "INFRARED",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }
+    ]
+}

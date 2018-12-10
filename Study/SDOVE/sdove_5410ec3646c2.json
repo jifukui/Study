@@ -1,0 +1,1478 @@
+{
+    "_id" : ObjectId("5c0a0c5ca124b135f448b6fb"),
+    "device_id" : "5410ec3646c2",
+    "identity" : {
+        "engine" : "PLETHORA",
+        "vendor_id" : 0,
+        "product_id" : 0,
+        "firmware_comment" : "",
+        "firmware_version" : "3.3.1.0",
+        "firmware_rc" : "19",
+        "is_receiver" : true,
+        "is_transmitter" : false,
+        "firmware_details" : [ 
+            {
+                "type" : "PRIMARY",
+                "details_available" : false,
+                "firmware_version" : "0.0.0.0",
+                "firmware_rc" : "0"
+            }, 
+            {
+                "type" : "GOLDEN",
+                "details_available" : false,
+                "firmware_version" : "0.0.0.0",
+                "firmware_rc" : "0"
+            }
+        ]
+    },
+    "status" : {
+        "active" : true,
+        "point_to_point" : false,
+        "boot_status" : "UNKNOWN",
+        "update_in_progress" : false,
+        "error_status" : {
+            "has_error_code" : false,
+            "error_code" : 0
+        },
+        "temperature" : 63
+    },
+    "nodes" : [ 
+        {
+            "type" : "ANALOG_AUDIO_OUTPUT",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {},
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 3,
+                            "choices" : [ 
+                                {
+                                    "value" : 2,
+                                    "description" : "HDMI Audio (Downmix)",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "HDMI_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 3,
+                                    "description" : "Analog Audio",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 8,
+                                    "description" : "I2S Audio",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "I2S_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "AUDIO",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "BUTTON",
+            "index" : 0,
+            "configuration" : {
+                "action" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "No action",
+                            "details" : "NONE"
+                        }, 
+                        {
+                            "value" : 1,
+                            "description" : "Send monitor EDID to all transmitter devices",
+                            "details" : "SEND_EDID"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "BUTTON",
+            "index" : 1,
+            "configuration" : {
+                "action" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "No action",
+                            "details" : "NONE"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "FRAME_BUFFER",
+            "index" : 0,
+            "configuration" : {
+                "display_mode" : "WALL_GENLOCKED",
+                "width" : 1920,
+                "height" : 1080,
+                "horiz_offset" : 976,
+                "vert_offset" : 0,
+                "frames_per_second" : 60
+            },
+            "status" : {
+                "source_video" : {
+                    "width" : 0,
+                    "height" : 0,
+                    "frames_per_second" : 0,
+                    "color_space" : "RGB",
+                    "bits_per_pixel" : 8,
+                    "scan_mode" : "PROGRESSIVE"
+                }
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 0
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 0
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 1,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 1
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 2,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 2
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 3,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 3
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 4,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 4
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 5,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 5
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 6,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 6
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 7,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 7
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 8,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 8
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 9,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 9
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 10,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 10
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 11,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 11
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 12,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 12
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 13,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 13
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 14,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 14
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 15,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 15
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 16,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 16
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 17,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 17
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 18,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 18
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 19,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 19
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 20,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 20
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 21,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 21
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 22,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 22
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 23,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 23
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 24,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 24
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 25,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 25
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 26,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 26
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 27,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 27
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 28,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 28
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 29,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 29
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 30,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 30
+                        }
+                    }
+                }, 
+                {
+                    "name" : "multiview",
+                    "index" : 31,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI",
+                            "ref_index" : 31
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 0,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 1,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 2,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 3,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 4,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 5,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 6,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 7,
+            "configuration" : {
+                "tristate" : 1,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 8,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 9,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 10,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 11,
+            "configuration" : {
+                "tristate" : 1,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 1
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 12,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 13,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "GPIO",
+            "index" : 14,
+            "configuration" : {
+                "tristate" : 0,
+                "cfg_val" : 0
+            },
+            "status" : {
+                "stat_val" : 0
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "HDMI_ENCODER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "video" : {
+                    "width" : 1920,
+                    "height" : 1080,
+                    "frames_per_second" : 60,
+                    "color_space" : "RGB",
+                    "bits_per_pixel" : 8,
+                    "scan_mode" : "PROGRESSIVE"
+                },
+                "has_video_details" : true,
+                "video_details" : {
+                    "frame_rate" : 60,
+                    "pixel_clock" : 148500000,
+                    "total_width" : 2200,
+                    "total_height" : 1125,
+                    "hsync_width" : 44,
+                    "hsync_front_porch" : 88,
+                    "hsync_negative" : false,
+                    "vsync_width" : 5,
+                    "vsync_front_porch" : 4,
+                    "vsync_negative" : false,
+                    "vic" : 16,
+                    "has_hdmi_vic" : false,
+                    "hdmi_vic" : 0,
+                    "picture_aspect" : "ASPECT_16_9",
+                    "has_active_format" : false,
+                    "active_format" : 0,
+                    "it_content_type" : "NO_DATA",
+                    "scan_information" : "NO_DATA",
+                    "colorimetry" : "RGB",
+                    "rgb_range" : "DEFAULT",
+                    "ycc_range" : "LIMITED"
+                },
+                "has_audio_details" : false,
+                "audio_details" : {},
+                "hdcp_protected" : false,
+                "hdcp_version" : "NONE",
+                "hdmi_2_0_support" : true,
+                "source_stable" : false
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 1,
+                            "choices" : [ 
+                                {
+                                    "value" : 0,
+                                    "description" : "Genlock Mode",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "HDMI",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 1,
+                                    "description" : "Frame Buffer Mode",
+                                    "details" : {
+                                        "ref_class" : "NODE",
+                                        "ref_type" : "FRAME_BUFFER",
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "FRAME_BUFFER",
+                            "ref_index" : 0
+                        }
+                    }
+                }, 
+                {
+                    "name" : "audio",
+                    "index" : 0,
+                    "configuration" : {
+                        "source" : {
+                            "value" : 2,
+                            "choices" : [ 
+                                {
+                                    "value" : 2,
+                                    "description" : "HDMI Audio (from HDMI Video in Genlock Mode)",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "HDMI_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 3,
+                                    "description" : "Analog Audio",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 6,
+                                    "description" : "HDMI Audio (Stereo Downmix)",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "HDMI_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 7,
+                                    "description" : "HDMI Audio (All Available Channels)",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "HDMI_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }, 
+                                {
+                                    "value" : 8,
+                                    "description" : "I2S Audio",
+                                    "details" : {
+                                        "ref_class" : "SUBSCRIPTION",
+                                        "ref_type" : "I2S_AUDIO",
+                                        "ref_index" : 0
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "HDMI_AUDIO",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "HDMI_MONITOR",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "connected" : true,
+                "edid" : "00ffffffffffff0005e39024a00300002b1c010380351e782add75a5554e9d270b5054bfef00d1c0b30095008180814081c001010101565e00a0a0a02950302035000f282100001e000000fd00324c1e631e000a202020202020000000fc00513234393057310a2020202020000000ff00415039303834335a3030393238013c02031ef14b101f051404130312021101230907078301000065030c001000023a801871382d40582c45000f282100001e011d007251d01e206e2855000f282100001e8c0ad08a20e02d10103e96000f28210000188c0ad090204031200c4055000f2821000018f03c00d051a0355060883a000f282100001c000000000000001d"
+            },
+            "inputs" : [ 
+                {
+                    "name" : "main",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "NODE",
+                            "ref_type" : "HDMI_ENCODER",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "INFRARED_ENCODER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {
+                "data_length_max" : 512
+            },
+            "inputs" : [ 
+                {
+                    "name" : "network",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "INFRARED",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "INFRARED_DECODER",
+            "index" : 0,
+            "configuration" : {},
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "LED",
+            "index" : 0,
+            "configuration" : {
+                "function" : {
+                    "value" : 0,
+                    "choices" : [ 
+                        {
+                            "value" : 0,
+                            "description" : "(Unknown)",
+                            "details" : "UNKNOWN"
+                        }, 
+                        {
+                            "value" : 1,
+                            "description" : "Blink LED",
+                            "details" : "BLINK"
+                        }, 
+                        {
+                            "value" : 8,
+                            "description" : "Default functionality",
+                            "details" : "DEFAULT"
+                        }
+                    ]
+                }
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "NETWORK_INTERFACE",
+            "index" : 0,
+            "configuration" : {
+                "hostname" : "5410EC3646C2",
+                "ip" : {
+                    "address" : "192.168.0.9",
+                    "mode" : "DHCP",
+                    "mask" : "255.255.255.0",
+                    "gateway" : "192.168.0.1"
+                }
+            },
+            "status" : {
+                "mac_address" : "5410ec3646c2",
+                "ip" : {
+                    "address" : "192.168.0.9"
+                }
+            },
+            "inputs" : []
+        }, 
+        {
+            "type" : "NETWORK_SWITCH",
+            "index" : 0,
+            "configuration" : {
+                "gigabit_port_1_enable" : true
+            },
+            "status" : {},
+            "inputs" : []
+        }, 
+        {
+            "type" : "UART",
+            "index" : 0,
+            "configuration" : {
+                "baud_rate" : 115200,
+                "data_bits" : 8,
+                "stop_bits" : 1,
+                "parity" : "NONE"
+            },
+            "status" : {},
+            "inputs" : [ 
+                {
+                    "name" : "network",
+                    "index" : 0,
+                    "configuration" : {},
+                    "status" : {
+                        "source" : {
+                            "ref_class" : "SUBSCRIPTION",
+                            "ref_type" : "RS232",
+                            "ref_index" : 0
+                        }
+                    }
+                }
+            ]
+        }, 
+        {
+            "type" : "USB_ICRON_CHIP_REMOTE",
+            "index" : 0,
+            "configuration" : {
+                "extender_type" : "REMOTE",
+                "program_mode" : "NONE",
+                "rs232_port" : 0
+            },
+            "status" : {
+                "chip_present" : true,
+                "mac_address" : "001b44000010"
+            },
+            "inputs" : []
+        }
+    ],
+    "configuration" : {
+        "device_name" : "5410EC3646C2",
+        "locate_mode" : false
+    },
+    "streams" : [ 
+        {
+            "type" : "RS232",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "UART",
+                "ref_index" : 0
+            }
+        }, 
+        {
+            "type" : "INFRARED",
+            "index" : 0,
+            "configuration" : {
+                "address" : "255.255.255.255",
+                "enable" : true,
+                "auto_stop" : false
+            },
+            "status" : {
+                "state" : "STREAMING"
+            },
+            "source" : {
+                "ref_class" : "NODE",
+                "ref_type" : "INFRARED_DECODER",
+                "ref_index" : 0
+            }
+        }
+    ],
+    "subscriptions" : [ 
+        {
+            "type" : "HDMI",
+            "index" : 0,
+            "configuration" : {
+                "address" : "224.1.1.3",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 1,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 2,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 3,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 4,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 5,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 6,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 7,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 8,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 9,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 10,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 11,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 12,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 13,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 14,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 15,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 16,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 17,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 18,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 19,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 20,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 21,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 22,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 23,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 24,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 25,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 26,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 27,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 28,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 29,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 30,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI",
+            "index" : 31,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "HDMI_AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "224.1.1.5",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }, 
+        {
+            "type" : "AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "224.1.1.1",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }, 
+        {
+            "type" : "I2S_AUDIO",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : false
+            },
+            "status" : {
+                "state" : "STOPPED"
+            }
+        }, 
+        {
+            "type" : "RS232",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }, 
+        {
+            "type" : "INFRARED",
+            "index" : 0,
+            "configuration" : {
+                "address" : "0.0.0.0",
+                "enable" : true
+            },
+            "status" : {
+                "state" : "STREAMING"
+            }
+        }
+    ]
+}
