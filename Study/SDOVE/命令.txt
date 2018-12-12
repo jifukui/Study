@@ -1,0 +1,41 @@
+require命令
+event命令
+request命令
+get命令
+set命令
+join命令
+leave命令
+send命令
+start命令
+stop命令
+switch命令
+switch命令用于设置串口、红外和CEC通道数据的通信通道
+格式：
+(1)switch source:stream_type:index_tx destination [:subscription_type]:index_rx
+(2)switch source:stream_type:index_tx api
+(3)switch source:stream_type:index_tx dest_ip_address
+格式1用于设置设备
+格式2用于设置控制服务器
+格式3用于IP地址
+其中:
+source表示源设备的ID
+stream_type表示的是流的类型可以是CEC、RS232、INFRARED
+index_tx表示流的索引号
+destination表示的是目的设备的ID号
+subscription_type表示的是目的的流类型
+index_rx表示目的流的索引号
+api表示的是服务器的软件
+dest_ip_address表示目的设备的IP地址
+使用样例：
+
+layout命令
+mode命令
+program命令
+list命令
+icron命令
+version命令
+test命令
+update命令
+factory命令
+reboot命令
+quit命令

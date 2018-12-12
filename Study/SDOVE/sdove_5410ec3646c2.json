@@ -1,15 +1,15 @@
 {
     "_id" : ObjectId("5c0a0c5ca124b135f448b6fb"),
-    "device_id" : "5410ec3646c2",
-    "identity" : {
-        "engine" : "PLETHORA",
+    "device_id" : "5410ec3646c2",                   #设备识别号
+    "identity" : {                          
+        "engine" : "PLETHORA",                          
         "vendor_id" : 0,
         "product_id" : 0,
         "firmware_comment" : "",
-        "firmware_version" : "3.3.1.0",
+        "firmware_version" : "3.3.1.0",             #固件程序版本号
         "firmware_rc" : "19",
-        "is_receiver" : true,
-        "is_transmitter" : false,
+        "is_receiver" : true,                       #是否是接收器
+        "is_transmitter" : false,                   #是否是发送器
         "firmware_details" : [ 
             {
                 "type" : "PRIMARY",
