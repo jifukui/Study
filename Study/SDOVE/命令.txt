@@ -4,6 +4,9 @@ request命令
 get命令
 set命令
 join命令
+join命令主要是用于将源音频、HDMI视频、HDMI音频、I2S音频设置给目的设备
+格式：
+join source:stream_type:index_tx des
 leave命令
 send命令
 start命令
