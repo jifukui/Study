@@ -38,4 +38,50 @@ keep用于设置处于墙模式下，用于定义显示源信号的一部分区�
 polarity用于设置视频的同步极性
 格式 polarity horiz_polarity vert_polarity
 其中horiz_polarity为行同步极性值vert_polarity为场同步极性值
-值只能为POSITIVE或者是NEGATIVE
+值只能为POSITIVE（正极性）或者是NEGATIVE（负极性）
+>>8 pulse
+pulse用于设置同步脉冲的宽度
+格式 pulse horiz_pulse vert_pulse
+其中horiz_pulse为行同步脉冲宽度,vert_pulse为场同步脉冲宽度
+宽度值必须为偶数
+>>9 视频分辨率
+视频分辨率用于在multiview状态下设置视频的大小
+格式 size width height 其中width必须为偶数,如果没有设置这和multiview layout相等
+>>10 总点数
+用于设置视频的总点数包括空白区
+格式 total total_width total_height
+>>11 视频身份码
+用于设置视频的分辨率
+格式 vic vic
+VIC				视频分辨率
+1				640*480@60
+2				720*480@60(4:3)
+3				720*480@60(16:9)
+4				1280*720@60
+16				1920*1080@60
+17				720*560@50(4:3)
+18				720*560@50(16:9)
+19				1280*720@50
+31				1920*1080@50
+32				1920*1080@24
+33				1920*1080@25
+34				1920*1080@30
+60				1280*720@24
+61				1280*720@25
+62				1280*720@30
+93				3840*2160@24
+94				3840*2160@25
+95				3840*2160@30
+96				3840*2160@50
+97				3840*2160@60
+98				4096*2160@24(256:135)
+99				4096*2160@25(256:135)
+100				4096*2160@30(256:135)
+101				4096*2160@50(256:135)
+102				4096*2160@60(256:135)
+>>12 视口
+视口用于墙模式状态下是一个矩形的窗口。
+格式 viewport viewport_horiz viewport_vert viewport_width viewport_height
+其中 viewport_horiz表示为矩形窗口的左上角的横坐标,viewport_vert为矩形串口
+左上角的纵坐标， viewport_width表示矩形窗口的宽度， viewport_height表示矩
+形串口的高度， viewport_width的参数值需要为偶数。
