@@ -5,3 +5,37 @@ fastswitch：快速切换模式有1~2帧的延时，满屏模式，此模式下�
 出现黑边来呈现正常的行宽比。
 wall：墙模式
 multiview:多视角模式
+（2）视频格式参数
+>>1 行宽比aspect
+格式 aspect aspect_ratio
+其中 aspect_ratio为行宽比的值
+aspect_ratio 参数：
+ASPECT_NO_DATA：行宽比丢失未定义
+ASPECT_4_3:行宽比为4:3
+ASPECT_16_9:行宽比为16:9
+ASPECT_256_135：行宽比为256:135
+ASPECT_64_27：行宽比为64:27
+>>2 帧率 fps
+格式 fps fps
+其中fps为帧率的值
+>>3 视频同步前沿 front_proch
+格式 front_proch hsync_front_porch vsync_front_porch
+其中hsync_front_porch为行同步前沿像素值
+vsync_front_porch为场同步前沿像素值
+>>4 HDMI视频定义编码 hdmi_vic
+格式 hdmi_vic hdmi_vic
+其中hdmi_vic表示的是参数代号
+hdmi_vic的参数值
+>>5 keep
+keep用于设置处于墙模式下，用于定义显示源信号的一部分区域的大小
+格式 keep keep_width keep_height
+其中keep_width为区域宽度的像素个数，keep_height为区域高度的像素个数
+>>6 offset
+在墙模式下使用，用于选择截取源信号的偏移位置
+格式 offset horiz_offset vert_offset
+其中 horiz_offset截取位置的横坐标 vert_offset为截取位置的纵坐标
+>>7 polarity
+polarity用于设置视频的同步极性
+格式 polarity horiz_polarity vert_polarity
+其中horiz_polarity为行同步极性值vert_polarity为场同步极性值
+值只能为POSITIVE或者是NEGATIVE
