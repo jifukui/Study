@@ -1,7 +1,8 @@
-AR	=gar
-AS	=gas
-CC	=gcc
-LD	=gld
+AR	=gar    #设置
+AS	=gas    #设置汇编器为gas
+CC	=gcc    #设置编译器为gcc
+LD	=gld    #设置连接器为gld
+#设置
 CFLAGS	=-Wall -O -fstrength-reduce -fcombine-regs -fomit-frame-pointer \
 	-mstring-insns -nostdinc -I../include
 CPP	=gcc -E -nostdinc -I../include

@@ -13,14 +13,19 @@
 #include <string.h>
 
 /* we use this so that we can do without the ctype library */
+
+/*判断字符是否是数字*/
 #define is_digit(c)	((c) >= '0' && (c) <= '9')
 
+/*将数字字符转换为有符号的整形数值*/
 static int skip_atoi(const char **s)
 {
 	int i=0;
 
 	while (is_digit(**s))
+	{
 		i = i*10 + *((*s)++) - '0';
+	}
 	return i;
 }
 
