@@ -1,4 +1,9 @@
 require命令
+require命令用于设置使用的命令模块和模块的版本
+格式：
+require module_name version
+其中module_name有blueriver_api和multiview
+blueriver_api当前版本为2.14.0.0,multiview的版本为 1.1.0
 event命令
 request命令
 get命令
@@ -37,6 +42,9 @@ program命令
 list命令
 icron命令
 version命令
+用于获取服务器支持的模块及版本
+格式 
+version
 test命令
 update命令
 factory命令
