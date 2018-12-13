@@ -84,4 +84,16 @@ VIC				视频分辨率
 格式 viewport viewport_horiz viewport_vert viewport_width viewport_height
 其中 viewport_horiz表示为矩形窗口的左上角的横坐标,viewport_vert为矩形串口
 左上角的纵坐标， viewport_width表示矩形窗口的宽度， viewport_height表示矩
-形串口的高度， viewport_width的参数值需要为偶数。
+形串口的高度， viewport_width的参数值需要为偶数。用于墙模式状态下。如果没
+有定义则显示整个屏幕
+>>13 颜色量化范围
+用于设置颜色的量化范围。
+格式:quantization quantization_rang
+其中 quantization_rang的参数值为：
+STANDARD ：采用CEA-861-F标准的协议
+AUTO：和STANDARD一样但是明确使用FULL和LIMITED作为合适的代替AVI InfoFrame
+LIMITED：强制现实的量化范围
+FULL：强制全量化范围
+在未设置的情况下为STANDARD
+（3）唯一定义的视频格式
+

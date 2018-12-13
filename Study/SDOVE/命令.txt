@@ -7,7 +7,10 @@ blueriver_api当前版本为2.14.0.0,multiview的版本为 1.1.0
 event命令
 request命令
 get命令
+get命令用于获取一个设备或者一组设备的信息
+格式: get target subset
 set命令
+set命令用于设置视频的输出的格式
 join命令
 join命令主要是用于将源音频、HDMI视频、HDMI音频、I2S音频设置给目的设备
 格式：
@@ -35,7 +38,6 @@ index_rx表示目的流的索引号
 api表示的是服务器的软件
 dest_ip_address表示目的设备的IP地址
 使用样例：
-
 layout命令
 mode命令
 program命令
@@ -48,5 +50,8 @@ version
 test命令
 update命令
 factory命令
+factory命令用于设置设备复位到出厂状态。
+格式 factory target
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
 reboot命令
 quit命令
