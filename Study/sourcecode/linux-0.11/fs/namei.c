@@ -37,19 +37,28 @@
  * I don't know if we should look at just the euid or both euid and
  * uid, but that should be easily changed.
  */
+/**/
 static int permission(struct m_inode * inode,int mask)
 {
 	int mode = inode->i_mode;
 
 /* special case: not even root can read/write a deleted file */
 	if (inode->i_dev && !inode->i_nlinks)
+	{
 		return 0;
+	}
 	else if (current->euid==inode->i_uid)
+	{
 		mode >>= 6;
+	}
 	else if (current->egid==inode->i_gid)
+	{
 		mode >>= 3;
+	}
 	if (((mode & mask & 0007) == mask) || suser())
+	{
 		return 1;
+	}
 	return 0;
 }
 
@@ -65,9 +74,13 @@ static int match(int len,const char * name,struct dir_entry * de)
 	register int same __asm__("ax");
 
 	if (!de || !de->inode || len > NAME_LEN)
+	{
 		return 0;
+	}
 	if (len < NAME_LEN && de->name[len])
+	{
 		return 0;
+	}
 	__asm__("cld\n\t"
 		"fs ; repe ; cmpsb\n\t"
 		"setz %%al"

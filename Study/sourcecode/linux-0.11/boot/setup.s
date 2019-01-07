@@ -32,7 +32,7 @@ start:
 
 ! ok, the read went well so we get current cursor position and save it for
 ! posterity.
-
+!获取光标的位置,存储在0x9000:0000处
 	mov	ax,#INITSEG	! this is done in bootsect already, but...
 	mov	ds,ax
 	mov	ah,#0x03	! read cursor pos
@@ -41,7 +41,7 @@ start:
 	mov	[0],dx		! it from 0x90000.
 
 ! Get memory size (extended mem, kB)
-
+!获取内存空间以Kb为单位
 	mov	ah,#0x88
 	int	0x15
 	mov	[2],ax
