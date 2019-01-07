@@ -290,7 +290,7 @@ struct m_inode * iget(int dev,int nr)
 	read_inode(inode);
 	return inode;
 }
-
+/*读节点*/
 static void read_inode(struct m_inode * inode)
 {
 	struct super_block * sb;
@@ -310,7 +310,7 @@ static void read_inode(struct m_inode * inode)
 	brelse(bh);
 	unlock_inode(inode);
 }
-
+/*写节点*/
 static void write_inode(struct m_inode * inode)
 {
 	struct super_block * sb;
