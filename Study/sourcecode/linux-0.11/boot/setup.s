@@ -41,18 +41,18 @@ start:
 	mov	[0],dx		! it from 0x90000.
 
 ! Get memory size (extended mem, kB)
-!获取内存空间以Kb为单位
+!获取内存空间（扩展内存）以Kb为单位
 	mov	ah,#0x88
 	int	0x15
 	mov	[2],ax
-
+!获取视频模式
 ! Get video-card data:
 
 	mov	ah,#0x0f
 	int	0x10
 	mov	[4],bx		! bh = display page
 	mov	[6],ax		! al = video mode, ah = window width
-
+!获取EGA/VGA的配置参数
 ! check for EGA/VGA and some config parameters
 
 	mov	ah,#0x12
@@ -87,7 +87,7 @@ start:
 	movsb
 
 ! Check that there IS a hd1 :-)
-
+!检测硬盘2是否在线
 	mov	ax,#0x01500
 	mov	dl,#0x81
 	int	0x13
@@ -111,7 +111,8 @@ is_disk1:
 ! first we move the system to it's rightful place
 
 	mov	ax,#0x0000
-	cld			! 'direction'=0, movs moves forward
+	cld			! 'direction'=0, movs moves forward							si,di向前进行移动
+!将0x1000处的数据搬移至0x0000处搬移数据量为0x8000*8
 do_move:
 	mov	es,ax		! destination segment
 	add	ax,#0x1000
@@ -130,11 +131,11 @@ do_move:
 end_move:
 	mov	ax,#SETUPSEG	! right, forgot this at first. didn't work :-)
 	mov	ds,ax
-	lidt	idt_48		! load idt with 0,0
-	lgdt	gdt_48		! load gdt with whatever appropriate
+	lidt	idt_48		! load idt with 0,0									!设置idt寄存器
+	lgdt	gdt_48		! load gdt with whatever appropriate				!设置gdt寄存器
 
 ! that was painless, now we enable A20
-
+!设置打开A20地址总线
 	call	empty_8042
 	mov	al,#0xD1		! command write
 	out	#0x64,al
