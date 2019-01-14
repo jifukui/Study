@@ -25,10 +25,12 @@ typedef enum {
 /*---------------------------------------*/
 /* Prototypes for disk control functions */
 
-
+/**进行磁盘的初始化*/
 DSTATUS disk_initialize (BYTE pdrv);
+/**返回磁盘的状态当前只能返回初始化失败状态和保护状态*/
 DSTATUS disk_status (BYTE pdrv);
 DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
+/*                  物理驱动器        内容              扇区号        数量*/
 DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
 DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 

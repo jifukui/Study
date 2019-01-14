@@ -119,46 +119,46 @@ typedef DWORD FSIZE_t;
 
 
 /* Filesystem object structure (FATFS) */
-
+/*文件系统结构体*/
 typedef struct {
-	BYTE	fs_type;		/* Filesystem type (0:not mounted) */
-	BYTE	pdrv;			/* Associated physical drive */
-	BYTE	n_fats;			/* Number of FATs (1 or 2) */
-	BYTE	wflag;			/* win[] flag (b0:dirty) */
+	BYTE	fs_type;		/* Filesystem type (0:not mounted) 文件类型*/
+	BYTE	pdrv;			/* Associated physical drive  关联的物理驱动器*/
+	BYTE	n_fats;			/* Number of FATs (1 or 2) FAT表的数量*/
+	BYTE	wflag;			/* win[] flag (b0:dirty)  */
 	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */
-	WORD	id;				/* Volume mount ID */
-	WORD	n_rootdir;		/* Number of root directory entries (FAT12/16) */
-	WORD	csize;			/* Cluster size [sectors] */
+	WORD	id;				/* Volume mount ID  挂载的卷标*/
+	WORD	n_rootdir;		/* Number of root directory entries (FAT12/16) 根文件目录数量*/
+	WORD	csize;			/* Cluster size [sectors] 簇的大小，一个簇包含几个扇区*/
 #if FF_MAX_SS != FF_MIN_SS
-	WORD	ssize;			/* Sector size (512, 1024, 2048 or 4096) */
+	WORD	ssize;			/* Sector size (512, 1024, 2048 or 4096) 扇区大小*/
 #endif
 #if FF_USE_LFN
-	WCHAR*	lfnbuf;			/* LFN working buffer */
+	WCHAR*	lfnbuf;			/* LFN working buffer 存储上文件名*/
 #endif
 #if FF_FS_EXFAT
-	BYTE*	dirbuf;			/* Directory entry block scratchpad buffer for exFAT */
+	BYTE*	dirbuf;			/* Directory entry block scratchpad buffer for exFAT efat根目录占存buf*/
 #endif
 #if FF_FS_REENTRANT
-	FF_SYNC_t	sobj;		/* Identifier of sync object */
+	FF_SYNC_t	sobj;		/* Identifier of sync object 同步标识符*/
 #endif
 #if !FF_FS_READONLY
-	DWORD	last_clst;		/* Last allocated cluster */
-	DWORD	free_clst;		/* Number of free clusters */
+	DWORD	last_clst;		/* Last allocated cluster 最后一个簇*/
+	DWORD	free_clst;		/* Number of free clusters 空闲的簇*/
 #endif
 #if FF_FS_RPATH
-	DWORD	cdir;			/* Current directory start cluster (0:root) */
+	DWORD	cdir;			/* Current directory start cluster (0:root) 当前起始目录的位置*/
 #if FF_FS_EXFAT
-	DWORD	cdc_scl;		/* Containing directory start cluster (invalid when cdir is 0) */
+	DWORD	cdc_scl;		/* Containing directory start cluster (invalid when cdir is 0) 内容文件开始的簇*/
 	DWORD	cdc_size;		/* b31-b8:Size of containing directory, b7-b0: Chain status */
 	DWORD	cdc_ofs;		/* Offset in the containing directory (invalid when cdir is 0) */
 #endif
 #endif
-	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) */
-	DWORD	fsize;			/* Size of an FAT [sectors] */
-	DWORD	volbase;		/* Volume base sector */
-	DWORD	fatbase;		/* FAT base sector */
-	DWORD	dirbase;		/* Root directory base sector/cluster */
-	DWORD	database;		/* Data base sector */
+	DWORD	n_fatent;		/* Number of FAT entries (number of clusters + 2) FAT条目的数量*/
+	DWORD	fsize;			/* Size of an FAT [sectors] FAT表的大小*/
+	DWORD	volbase;		/* Volume base sector 卷标扇区*/
+	DWORD	fatbase;		/* FAT base sector FAT表扇区*/
+	DWORD	dirbase;		/* Root directory base sector/cluster 根目录扇区*/
+	DWORD	database;		/* Data base sector 数据扇区*/
 #if FF_FS_EXFAT
 	DWORD	bitbase;		/* Allocation bitmap base sector */
 #endif
@@ -169,14 +169,14 @@ typedef struct {
 
 
 /* Object ID and allocation information (FFOBJID) */
-
+/*ff结构体*/
 typedef struct {
 	FATFS*	fs;				/* Pointer to the hosting volume of this object */
 	WORD	id;				/* Hosting volume mount ID */
 	BYTE	attr;			/* Object attribute */
 	BYTE	stat;			/* Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:fragmented in this session, b2:sub-directory stretched) */
-	DWORD	sclust;			/* Object data start cluster (0:no cluster or root directory) */
-	FSIZE_t	objsize;		/* Object size (valid when sclust != 0) */
+	DWORD	sclust;			/* Object data start cluster (0:no cluster or root directory) 开始簇*/
+	FSIZE_t	objsize;		/* Object size (valid when sclust != 0) 文件的大小*/
 #if FF_FS_EXFAT
 	DWORD	n_cont;			/* Size of first fragment - 1 (valid when stat == 3) */
 	DWORD	n_frag;			/* Size of last fragment needs to be written to FAT (valid when not zero) */
@@ -192,20 +192,20 @@ typedef struct {
 
 
 /* File object structure (FIL) */
-
+/*文件结构体*/
 typedef struct {
 	FFOBJID	obj;			/* Object identifier (must be the 1st member to detect invalid object pointer) */
-	BYTE	flag;			/* File status flags */
-	BYTE	err;			/* Abort flag (error code) */
-	FSIZE_t	fptr;			/* File read/write pointer (Zeroed on file open) */
-	DWORD	clust;			/* Current cluster of fpter (invalid when fptr is 0) */
-	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) */
+	BYTE	flag;			/* File status flags 文件状态标识*/
+	BYTE	err;			/* Abort flag (error code) 错误标志*/
+	FSIZE_t	fptr;			/* File read/write pointer (Zeroed on file open) 文件读写指针当前读写的位置*/
+	DWORD	clust;			/* Current cluster of fpter (invalid when fptr is 0) 当前读写所在的簇*/
+	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) 当前读写所在的扇区*/
 #if !FF_FS_READONLY
 	DWORD	dir_sect;		/* Sector number containing the directory entry (not used at exFAT) */
 	BYTE*	dir_ptr;		/* Pointer to the directory entry in the win[] (not used at exFAT) */
 #endif
 #if FF_USE_FASTSEEK
-	DWORD*	cltbl;			/* Pointer to the cluster link map table (nulled on open, set by application) */
+	DWORD*	cltbl;			/* Pointer to the cluster link map table (nulled on open, set by application) 指出*/
 #endif
 #if !FF_FS_TINY
 	BYTE	buf[FF_MAX_SS];	/* File private data read/write window */
@@ -215,14 +215,14 @@ typedef struct {
 
 
 /* Directory object structure (DIR) */
-
+/*目录结构体*/
 typedef struct {
-	FFOBJID	obj;			/* Object identifier */
-	DWORD	dptr;			/* Current read/write offset */
-	DWORD	clust;			/* Current cluster */
-	DWORD	sect;			/* Current sector (0:Read operation has terminated) */
+	FFOBJID	obj;			/* Object identifier 文件*/
+	DWORD	dptr;			/* Current read/write offset 偏移值*/
+	DWORD	clust;			/* Current cluster 当前簇*/
+	DWORD	sect;			/* Current sector (0:Read operation has terminated) 当前扇区*/
 	BYTE*	dir;			/* Pointer to the directory item in the win[] */
-	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} */
+	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} 存储短文件名*/
 #if FF_USE_LFN
 	DWORD	blk_ofs;		/* Offset of current entry block being processed (0xFFFFFFFF:Invalid) */
 #endif
@@ -234,12 +234,12 @@ typedef struct {
 
 
 /* File information structure (FILINFO) */
-
+/*文件信息结构体*/
 typedef struct {
-	FSIZE_t	fsize;			/* File size */
-	WORD	fdate;			/* Modified date */
-	WORD	ftime;			/* Modified time */
-	BYTE	fattrib;		/* File attribute */
+	FSIZE_t	fsize;			/* File size 文件大小*/
+	WORD	fdate;			/* Modified date 修改日期*/
+	WORD	ftime;			/* Modified time 修改时间*/
+	BYTE	fattrib;		/* File attribute 文件属性*/
 #if FF_USE_LFN
 	TCHAR	altname[FF_SFN_BUF + 1];/* Altenative file name */
 	TCHAR	fname[FF_LFN_BUF + 1];	/* Primary file name */
@@ -251,7 +251,7 @@ typedef struct {
 
 
 /* File function return code (FRESULT) */
-
+/*文件函数的返回值*/
 typedef enum {
 	FR_OK = 0,				/* (0) Succeeded */
 	FR_DISK_ERR,			/* (1) A hard error occurred in the low level disk I/O layer */
@@ -341,13 +341,13 @@ DWORD get_fattime (void);
 
 /* LFN support functions */
 #if FF_USE_LFN >= 1						/* Code conversion (defined in unicode.c) */
-WCHAR ff_oem2uni (WCHAR oem, WORD cp);	/* OEM code to Unicode conversion */
-WCHAR ff_uni2oem (DWORD uni, WORD cp);	/* Unicode to OEM code conversion */
-DWORD ff_wtoupper (DWORD uni);			/* Unicode upper-case conversion */
+WCHAR ff_oem2uni (WCHAR oem, WORD cp);	/* OEM code to Unicode conversion OEM转换为Unicode*/
+WCHAR ff_uni2oem (DWORD uni, WORD cp);	/* Unicode to OEM code conversion Unicode转换为OEM*/
+DWORD ff_wtoupper (DWORD uni);			/* Unicode upper-case conversion 转换为大写*/
 #endif
 #if FF_USE_LFN == 3						/* Dynamic memory allocation */
-void* ff_memalloc (UINT msize);			/* Allocate memory block */
-void ff_memfree (void* mblock);			/* Free memory block */
+void* ff_memalloc (UINT msize);			/* Allocate memory block 动态内存分配*/
+void ff_memfree (void* mblock);			/* Free memory block 动态内存释放*/
 #endif
 
 /* Sync functions */

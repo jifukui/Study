@@ -96,8 +96,9 @@
 /     0 - Include all code pages above and configured by f_setcp()
 */
 
-
-#define FF_USE_LFN		0
+/*是否使用长文件名以及使用的模式*/
+#define FF_USE_LFN		1
+/*长文件名的最长文件名长度*/
 #define FF_MAX_LFN		255
 /* The FF_USE_LFN switches the support for LFN (long file name).
 /
@@ -128,8 +129,9 @@
 /  Also behavior of string I/O functions will be affected by this option.
 /  When LFN is not enabled, this option has no effect. */
 
-
+/*长文件名的文件名长度*/
 #define FF_LFN_BUF		255
+/*短文件名的文件名长度*/
 #define FF_SFN_BUF		12
 /* This set of options defines size of file name members in the FILINFO structure
 /  which is used to read out directory items. These values should be suffcient for
@@ -149,7 +151,7 @@
 /   3: Unicode in UTF-8
 */
 
-
+//是否支持相对路径
 #define FF_FS_RPATH		0
 /* This option configures support for relative path.
 /
@@ -162,11 +164,11 @@
 /*---------------------------------------------------------------------------/
 / Drive/Volume Configurations
 /---------------------------------------------------------------------------*/
-
+//使用的卷的数量
 #define FF_VOLUMES		1
 /* Number of volumes (logical drives) to be used. (1-10) */
 
-
+/*是否使用了卷ID 只是属性字符串*/
 #define FF_STR_VOLUME_ID	0
 #define FF_VOLUME_STRS		"RAM","NAND","CF","SD","SD2","USB","USB2","USB3"
 /* FF_STR_VOLUME_ID switches support for volume ID in arbitrary strings.
@@ -199,13 +201,13 @@
 /  for variable sector size mode and disk_ioctl() function needs to implement
 /  GET_SECTOR_SIZE command. */
 
-
+//
 #define FF_USE_TRIM		0
 /* This option switches support for ATA-TRIM. (0:Disable or 1:Enable)
 /  To enable Trim function, also CTRL_TRIM command should be implemented to the
 /  disk_ioctl() function. */
 
-
+//
 #define FF_FS_NOFSINFO	0
 /* If you need to know correct free space on the FAT32 volume, set bit 0 of this
 /  option, and f_getfree() function at first time after volume mount will force
@@ -222,23 +224,26 @@
 /*---------------------------------------------------------------------------/
 / System Configurations
 /---------------------------------------------------------------------------*/
-
+//是否支持小缓冲区配置
 #define FF_FS_TINY		0
 /* This option switches tiny buffer configuration. (0:Normal or 1:Tiny)
 /  At the tiny configuration, size of file object (FIL) is shrinked FF_MAX_SS bytes.
 /  Instead of private sector buffer eliminated from the file object, common sector
 /  buffer in the filesystem object (FATFS) is used for the file data transfer. */
 
-
+//是否时钟EXFAT文件系统
 #define FF_FS_EXFAT		0
 /* This option switches support for exFAT filesystem. (0:Disable or 1:Enable)
 /  To enable exFAT, also LFN needs to be enabled. (FF_USE_LFN >= 1)
 /  Note that enabling exFAT discards ANSI C (C89) compatibility. */
 
-
+//设置是否支持无时间戳功能
 #define FF_FS_NORTC		0
+//月
 #define FF_NORTC_MON	1
+//日
 #define FF_NORTC_MDAY	1
+//年
 #define FF_NORTC_YEAR	2018
 /* The option FF_FS_NORTC switches timestamp functiton. If the system does not have
 /  any RTC function or valid timestamp is not needed, set FF_FS_NORTC = 1 to disable
@@ -249,7 +254,7 @@
 /  FF_NORTC_MDAY and FF_NORTC_YEAR have no effect.
 /  These options have no effect at read-only configuration (FF_FS_READONLY = 1). */
 
-
+/*是否支持对打开的文件进行操作*/
 #define FF_FS_LOCK		0
 /* The option FF_FS_LOCK switches file lock function to control duplicated file open
 /  and illegal operation to open objects. This option must be 0 when FF_FS_READONLY
@@ -261,7 +266,7 @@
 /      can be opened simultaneously under file lock control. Note that the file
 /      lock control is independent of re-entrancy. */
 
-
+/*是否支持文件重入*/
 /* #include <somertos.h>	// O/S definitions */
 #define FF_FS_REENTRANT	0
 #define FF_FS_TIMEOUT	1000
