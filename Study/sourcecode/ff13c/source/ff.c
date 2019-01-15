@@ -59,9 +59,10 @@
 
 
 /* Additional file attribute bits for internal use */
-#define AM_VOL		0x08	/* Volume label */
-#define AM_LFN		0x0F	/* LFN entry */
-#define AM_MASK		0x3F	/* Mask of defined bits */
+/***文件的属性值**/
+#define AM_VOL		0x08	/* Volume label 卷标*/
+#define AM_LFN		0x0F	/* LFN entry  长文件名在0x0B处的值一定为0x0F*/
+#define AM_MASK		0x3F	/* Mask of defined bits 文件属性的有效字段*/
 
 
 /* Name status flags in fn[11] */
@@ -761,19 +762,42 @@ static int dbc_1st (BYTE c)
 static int dbc_2nd (BYTE c)
 {
 #if FF_CODE_PAGE == 0		/* Variable code page */
-	if (DbcTbl && c >= DbcTbl[4]) {
-		if (c <= DbcTbl[5]) return 1;					/* 2nd byte range 1 */
-		if (c >= DbcTbl[6] && c <= DbcTbl[7]) return 1;	/* 2nd byte range 2 */
-		if (c >= DbcTbl[8] && c <= DbcTbl[9]) return 1;	/* 2nd byte range 3 */
+	if (DbcTbl && c >= DbcTbl[4]) 
+	{
+		if (c <= DbcTbl[5]) 
+		{
+			return 1;
+		}					/* 2nd byte range 1 */
+		if (c >= DbcTbl[6] && c <= DbcTbl[7]) 
+		{
+			return 1;
+		}	/* 2nd byte range 2 */
+		if (c >= DbcTbl[8] && c <= DbcTbl[9]) 
+		{
+			return 1;
+		}	/* 2nd byte range 3 */
 	}
 #elif FF_CODE_PAGE >= 900	/* DBCS fixed code page */
-	if (c >= DbcTbl[4]) {
-		if (c <= DbcTbl[5]) return 1;
-		if (c >= DbcTbl[6] && c <= DbcTbl[7]) return 1;
-		if (c >= DbcTbl[8] && c <= DbcTbl[9]) return 1;
+	if (c >= DbcTbl[4]) 
+	{
+		if (c <= DbcTbl[5]) 
+		{
+			return 1;
+		}
+		if (c >= DbcTbl[6] && c <= DbcTbl[7]) 
+		{
+			return 1;
+		}
+		if (c >= DbcTbl[8] && c <= DbcTbl[9]) 
+		{
+			return 1;
+		}
 	}
 #else						/* SBCS fixed code page */
-	if (c != 0) return 0;	/* Always false */
+	if (c != 0) 
+	{
+		return 0;
+	}	/* Always false */
 #endif
 	return 0;
 }
@@ -1844,7 +1868,7 @@ static FRESULT dir_clear (	/* Returns FR_OK or FR_DISK_ERR */
 
 /*-----------------------------------------------------------------------*/
 /* Directory handling - Set directory index                              */
-/**根据传入的偏移值得到相对偏移的值*/
+/**根据传入的偏移值得到相对偏移的值,同时*/
 /*-----------------------------------------------------------------------*/
 
 static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
@@ -1932,23 +1956,31 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 	DWORD ofs, clst;
 	FATFS *fs = dp->obj.fs;
 
-
+	/**设置相对于上一个目录的偏移值*/
 	ofs = dp->dptr + SZDIRE;	/* Next entry */
 	if (ofs >= (DWORD)((FF_FS_EXFAT && fs->fs_type == FS_EXFAT) ? MAX_DIR_EX : MAX_DIR)) 	/* Disable it if the offset reached the max value */
 	{
 		dp->sect = 0;
 	}
+	/***/
 	if (dp->sect == 0) 	/* Report EOT if it has been disabled */
 	{
 		return FR_NO_FILE;
 	}
+	/**偏移值为下一个扇区*/
 	if (ofs % SS(fs) == 0) 
 	{	/* Sector changed? */
 		dp->sect++;				/* Next sector */
 
-		if (dp->clust == 0) {	/* Static table */
-			if (ofs / SZDIRE >= fs->n_rootdir) {	/* Report EOT if it reached end of static table */
-				dp->sect = 0; return FR_NO_FILE;
+		if (dp->clust == 0) 
+		{	
+			/* Static table */
+			/**判断是否超出范围*/
+			if (ofs / SZDIRE >= fs->n_rootdir) 
+			{	
+				/* Report EOT if it reached end of static table */
+				dp->sect = 0; 
+				return FR_NO_FILE;
 			}
 		}
 		else {					/* Dynamic table */
@@ -1977,7 +2009,9 @@ static FRESULT dir_next (	/* FR_OK(0):succeeded, FR_NO_FILE:End of table, FR_DEN
 			}
 		}
 	}
+	/**设置当前的指针*/
 	dp->dptr = ofs;						/* Current entry */
+	/**设置dir的值*/
 	dp->dir = fs->win + ofs % SS(fs);	/* Pointer to the entry in the win[] */
 
 	return FR_OK;
@@ -2080,19 +2114,21 @@ static int cmp_lfn (		/* 1:matched, 0:not matched */
 	UINT i, s;
 	WCHAR wc, uc;
 
-	/*加载长文件名中的文件起始簇号的值,必须为0，并进行校验*/
+	/*长文件名使用0x1a,0x1b本作为文件起始簇，但是一直作为0值使用*/
 	if (ld_word(dir + LDIR_FstClusLO) != 0) 
 	{
 		return 0;	/* Check LDIR_FstClusLO */
 	}
-	/*获取属性字节位*/
+	/*根据长文件名的第一个字符判断是否是第一个文件名目录以及相对于文件名的偏移值*/
 	i = ((dir[LDIR_Ord] & 0x3F) - 1) * 13;	/* Offset in the LFN buffer */
 	/*校验文件名是否匹配*/
 	for (wc = 1, s = 0; s < 13; s++) 
 	{		/* Process all characters in the entry */
 		uc = ld_word(dir + LfnOfs[s]);		/* Pick an LFN character */
+		/**判断文件名是否取完*/
 		if (wc != 0) 
 		{
+			/**判断文件名的长度是否大于限制的长度或者两个文件的文件名不一致*/
 			if (i >= FF_MAX_LFN || ff_wtoupper(uc) != ff_wtoupper(lfnbuf[i++])) 
 			{	/* Compare it */
 				return 0;					/* Not matched */
@@ -2101,10 +2137,13 @@ static int cmp_lfn (		/* 1:matched, 0:not matched */
 		} 
 		else 
 		{
-			if (uc != 0xFFFF) return 0;		/* Check filler */
+			if (uc != 0xFFFF) 
+			{
+				return 0;
+			}		
 		}
 	}
-	/*文件名匹配但是长度不匹配*/
+	/*是文件名的最后一个目录但是后面的值不为0及文件长度错误*/
 	if ((dir[LDIR_Ord] & LLEF) && wc && lfnbuf[i]) 
 	{
 		return 0;	/* Last segment matched but different length */
@@ -2266,6 +2305,7 @@ static void gen_numname (
 #if FF_USE_LFN
 /*-----------------------------------------------------------------------*/
 /* FAT-LFN: Calculate checksum of an SFN entry                           */
+/**计算端文件名的校验和*/
 /*-----------------------------------------------------------------------*/
 
 static BYTE sum_sfn (
@@ -2658,7 +2698,7 @@ static FRESULT dir_find (	/* FR_OK(0):succeeded, !=0:error */
 #if FF_USE_LFN
 	BYTE a, ord, sum;
 #endif
-
+	/**如果打开过文件应该得到的是根文件目录的地址*/
 	res = dir_sdi(dp, 0);			/* Rewind directory object */
 	if (res != FR_OK)
 	{
@@ -2692,31 +2732,70 @@ static FRESULT dir_find (	/* FR_OK(0):succeeded, !=0:error */
 #endif
 	/* On the FAT/FAT32 volume */
 #if FF_USE_LFN
-	ord = sum = 0xFF; dp->blk_ofs = 0xFFFFFFFF;	/* Reset LFN sequence */
+	ord = sum = 0xFF; 
+	dp->blk_ofs = 0xFFFFFFFF;	/* Reset LFN sequence */
 #endif
 	do {
+		/**加载当前扇区的参数*/
 		res = move_window(fs, dp->sect);
-		if (res != FR_OK) break;
+		if (res != FR_OK) 
+		{
+			break;
+		}
+		/**c为条目的第一个字符*/
 		c = dp->dir[DIR_Name];
-		if (c == 0) { res = FR_NO_FILE; break; }	/* Reached to end of table */
-#if FF_USE_LFN		/* LFN configuration */
+		if (c == 0) 
+		{ 
+			res = FR_NO_FILE; 
+			break; 
+		}	/* Reached to end of table */
+#if FF_USE_LFN		
+		/* LFN configuration */
 		dp->obj.attr = a = dp->dir[DIR_Attr] & AM_MASK;
-		if (c == DDEM || ((a & AM_VOL) && a != AM_LFN)) {	/* An entry without valid data */
-			ord = 0xFF; dp->blk_ofs = 0xFFFFFFFF;	/* Reset LFN sequence */
-		} else {
-			if (a == AM_LFN) {			/* An LFN entry is found */
-				if (!(dp->fn[NSFLAG] & NS_NOLFN)) {
-					if (c & LLEF) {		/* Is it start of LFN sequence? */
+		/**如果该长文件名目录项对应的文件或子目录被删除，则将该字节设置成删除标志0xE5
+		 * 或者a的bit为3为1且a的值不为0xF,长文件名此属性值必为0xF
+		 * 目录或者是文件不存在或者不是长文件名
+		*/
+		if (c == DDEM || ((a & AM_VOL) && a != AM_LFN)) 
+		{	
+			/* An entry without valid data */
+			ord = 0xFF; 
+			dp->blk_ofs = 0xFFFFFFFF;	/* Reset LFN sequence */
+		} 
+		else 
+		{
+			/***对于是长文件名的处理*/
+			if (a == AM_LFN) 
+			{	
+				/* An LFN entry is found */
+				/**获取短文件名的属性值并进行与0x40进行与操作*/
+				if (!(dp->fn[NSFLAG] & NS_NOLFN)) 
+				{
+					/**如果是长文件名*/
+					if (c & LLEF) 
+					{		
+						/* Is it start of LFN sequence? */
 						sum = dp->dir[LDIR_Chksum];
-						c &= (BYTE)~LLEF; ord = c;	/* LFN start order */
+						c &= (BYTE)~LLEF; 
+						ord = c;	/* LFN start order */
 						dp->blk_ofs = dp->dptr;	/* Start offset of LFN */
 					}
 					/* Check validity of the LFN entry and compare it with given name */
+					/**ord为长文件名的序列号*/
 					ord = (c == ord && sum == dp->dir[LDIR_Chksum] && cmp_lfn(fs->lfnbuf, dp->dir)) ? ord - 1 : 0xFF;
 				}
-			} else {					/* An SFN entry is found */
-				if (ord == 0 && sum == sum_sfn(dp->dir)) break;	/* LFN matched? */
-				if (!(dp->fn[NSFLAG] & NS_LOSS) && !mem_cmp(dp->dir, dp->fn, 11)) break;	/* SFN matched? */
+			} 
+			else 
+			{	
+				/* An SFN entry is found */
+				if (ord == 0 && sum == sum_sfn(dp->dir)) 	/* LFN matched? */
+				{
+					break;
+				}
+				if (!(dp->fn[NSFLAG] & NS_LOSS) && !mem_cmp(dp->dir, dp->fn, 11)) 	/* SFN matched? */
+				{
+					break;
+				}
 				ord = 0xFF; dp->blk_ofs = 0xFFFFFFFF;	/* Reset LFN sequence */
 			}
 		}
@@ -2724,6 +2803,7 @@ static FRESULT dir_find (	/* FR_OK(0):succeeded, !=0:error */
 		dp->obj.attr = dp->dir[DIR_Attr] & AM_MASK;
 		if (!(dp->dir[DIR_Attr] & AM_VOL) && !mem_cmp(dp->dir, dp->fn, 11)) break;	/* Is it a valid entry? */
 #endif
+		/**读取下一个文件目录*/
 		res = dir_next(dp, 0);	/* Next entry */
 	} while (res == FR_OK);
 
@@ -3088,6 +3168,7 @@ static int pattern_matching (	/* 0:not matched, 1:matched */
 
 /*-----------------------------------------------------------------------*/
 /* Pick a top segment and create the object name in directory form       */
+/***主要是设置fn中的参数**/
 /*-----------------------------------------------------------------------*/
 
 static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not create */
@@ -3107,8 +3188,10 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	p = *path; 
 	lfn = dp->obj.fs->lfnbuf; 
 	di = 0;
+	/*****遇到错误进行返回或者是获取到文件名或者是目录名退出循环***/
 	for (;;) 
 	{
+		/**p指向的字符会被修改**/
 		uc = tchar2uni(&p);			/* Get a character */
 		if (uc == 0xFFFFFFFF) 		/* Invalid code or UTF decode error */
 		{
@@ -3121,7 +3204,7 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 		}
 		/**wc存储值的低位**/
 		wc = (WCHAR)uc;
-		/***如果遇到路径结束符**/
+		/***如果遇到路径结束符或者是分隔符**/
 		if (wc < ' ' || wc == '/' || wc == '\\') 	/* Break if end of the path or a separator is found */
 		{
 			break;
@@ -3143,16 +3226,20 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	{
 		p++;
 	}
-	/**指出文件名*/
+	/**当前情况应该是指出文件名，正常可以指出文件名*/
+	/**path的值指向下一级*/
 	*path = p;							/* Return pointer to the next segment */
-	/*
+	/**设置是否是最后一段*/
 	cf = (wc < ' ') ? NS_LAST : 0;		/* Set last segment flag if end of the path */
 
 #if FF_FS_RPATH != 0
 	if ((di == 1 && lfn[di - 1] == '.') ||
-		(di == 2 && lfn[di - 1] == '.' && lfn[di - 2] == '.')) {	/* Is this segment a dot name? */
+		(di == 2 && lfn[di - 1] == '.' && lfn[di - 2] == '.')) 
+	{	/* Is this segment a dot name? */
 		lfn[di] = 0;
-		for (i = 0; i < 11; i++) {		/* Create dot name for SFN entry */
+		for (i = 0; i < 11; i++) 
+		{		
+			/* Create dot name for SFN entry */
 			dp->fn[i] = (i < di) ? '.' : ' ';
 		}
 		dp->fn[i] = cf | NS_DOT;		/* This is a dot entry */
@@ -3160,7 +3247,9 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	}
 #endif
 	/***获取文件名中最后一个字符，并设置为0*/
-	while (di) {						/* Snip off trailing spaces and dots if exist */
+	while (di) 
+	{						
+		/* Snip off trailing spaces and dots if exist */
 		wc = lfn[di - 1];
 		if (wc != ' ' && wc != '.') 
 		{
@@ -3168,7 +3257,9 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 		}
 		di--;
 	}
-	lfn[di] = 0;							/* LFN is created into the working buffer */
+	/*判断lfn的第一个非空字符和非点号字符是否为0*/
+	lfn[di] = 0;							
+	/* LFN is created into the working buffer */
 	if (di == 0) 	/* Reject null name */
 	{
 		return FR_INVALID_NAME;
@@ -3179,6 +3270,7 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	for (si = 0; lfn[si] == ' '; si++) ;	/* Remove leading spaces */
 	if (si > 0 || lfn[si] == '.') 	/* Is there any leading space or dot? */
 	{
+		/**设置标记*/
 		cf |= NS_LOSS | NS_LFN;
 	}
 	/***获取最后一个句号的位置*/
@@ -3209,7 +3301,8 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 		{	
 			/* End of field? */
 			if (ni == 11) 
-			{				/* Name extension overflow? */
+			{	
+				/* Name extension overflow? */
 				cf |= NS_LOSS | NS_LFN;
 				break;
 			}
@@ -3282,7 +3375,8 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 				}
 				if (IsLower(wc)) 
 				{		/* ASCII lower case? */
-					b |= 1; wc -= 0x20;
+					b |= 1; 
+					wc -= 0x20;
 				}
 			}
 		}
@@ -3409,18 +3503,22 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	} 
 	else
 #endif
-	{										/* With heading separator */
+	{										
+		/* With heading separator 获取开始隔离符号*/
+		/**此时path的值已经被修改为指向非/或者是\的字符*/
 		while (*path == '/' || *path == '\\') 	/* Strip heading separator */
 		{
 			path++;
 		}
-		/*设置数据的开始簇为0*/
+		/*设置目录文档当前操作的簇为簇0*/
 		dp->obj.sclust = 0;					/* Start from root directory */
 	}
 #if FF_FS_EXFAT
 	dp->obj.n_frag = 0;	/* Invalidate last fragment counter of the object */
 #if FF_FS_RPATH != 0
-	if (fs->fs_type == FS_EXFAT && dp->obj.sclust) {	/* exFAT: Retrieve the sub-directory's status */
+	if (fs->fs_type == FS_EXFAT && dp->obj.sclust) 
+	{	
+		/* exFAT: Retrieve the sub-directory's status */
 		DIR dj;
 
 		dp->obj.c_scl = fs->cdc_scl;
@@ -3433,7 +3531,7 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	}
 #endif
 #endif
-	/***/
+	/**空文件名认为是根目录*/
 	if ((UINT)*path < ' ') 
 	{				
 		/* Null path name is the origin directory itself */
@@ -3443,10 +3541,12 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	} 
 	/**主要应该是执行这一段程序*/
 	else 
-	{								/* Follow path */
+	{								
+		/* Follow path */
 		for (;;) 
 		{
-			res = create_name(dp, &path);	/* Get a segment name of the path */
+			/* Get a segment name of the path */
+			res = create_name(dp, &path);	
 			if (res != FR_OK) 
 			{
 				break;
@@ -3454,7 +3554,8 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 			res = dir_find(dp);				/* Find an object with the segment name */
 			ns = dp->fn[NSFLAG];
 			if (res != FR_OK) 
-			{				/* Failed to find the object */
+			{				
+				/* Failed to find the object */
 				if (res == FR_NO_FILE) 
 				{	/* Object is not found */
 					if (FF_FS_RPATH && (ns & NS_DOT)) 
@@ -3470,6 +3571,7 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 				}
 				break;
 			}
+			/***找到文件名*/
 			if (ns & NS_LAST) 			/* Last segment matched. Function completed. */
 			{
 				break;
@@ -3477,7 +3579,8 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 			/* Get into the sub-directory */
 			if (!(dp->obj.attr & AM_DIR)) 
 			{		/* It is not a sub-directory and cannot follow */
-				res = FR_NO_PATH; break;
+				res = FR_NO_PATH; 
+				break;
 			}
 #if FF_FS_EXFAT
 			if (fs->fs_type == FS_EXFAT) 
@@ -3503,7 +3606,7 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 
 /*-----------------------------------------------------------------------*/
 /* Get logical drive number from path name                               */
-/*通过路径名称获取逻辑设备号，这里应该是只针对windows系统如果不适用于window系统直接返回0*/
+/*通过路径名称获取逻辑设备号，同时如果找到冒号修改path指向的位置为冒号的下一位，这里应该是只针对windows系统如果不适用于window系统直接返回0*/
 /*-----------------------------------------------------------------------*/
 
 static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive number or null pointer) */
@@ -3519,12 +3622,14 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 #endif
 
 	tt = tp = *path;
+	/***判断path指针是否是空指针*/
 	if (!tp) 
 	{
 		/* Invalid path name? */
 		/*文件名称非法*/
 		return vol;	
 	}
+	/**查找第一个冒号出现的位置，tt的值为冒号后一个字符在内存中的位置**/
 	do{
 		 tc = *tt++;
 	} while ((UINT)tc >= (FF_USE_LFN ? ' ' : '!') && tc != ':');	/* Find a colon in the path */
@@ -3534,7 +3639,9 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 		i = FF_VOLUMES;
 		/**如果是0:这样的格式**/
 		if (IsDigit(*tp) && tp + 2 == tt) 
-		{	/* Is there a numeric volume ID + colon? */
+		{	
+			/* Is there a numeric volume ID + colon? */
+			/**得到逻辑卷标号*/
 			i = (int)*tp - '0';	/* Get the LD number */
 		}
 #if FF_STR_VOLUME_ID == 1	/* Arbitrary string is enabled */
@@ -3543,10 +3650,12 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 			i = 0;
 			do 
 			{
-				sp = VolumeStr[i]; tp = *path;	/* This string volume ID and path name */
+				sp = VolumeStr[i]; 
+				tp = *path;	/* This string volume ID and path name */
 				do 
 				{	/* Compare the volume ID with path name */
-					c = *sp++; tc = *tp++;
+					c = *sp++; 
+					tc = *tp++;
 					if (IsLower(c))
 					{
 						 c -= 0x20;
@@ -3561,7 +3670,9 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 #endif
 		if (i < FF_VOLUMES) 
 		{	/* If a volume ID is found, get the drive number and strip it */
+			/**设置设备号*/
 			vol = i;		/* Drive number */
+			/**设置path指向的位置**/
 			*path = tt;		/* Snip the drive prefix off */
 		}
 		/*如果获得了逻辑卷ID返回卷ID和路径*/
@@ -3573,7 +3684,8 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 	{
 		i = 0;
 		do {
-			sp = VolumeStr[i]; tp = *path;	/* This string volume ID and path name */
+			sp = VolumeStr[i]; 
+			tp = *path;	/* This string volume ID and path name */
 			do 
 			{	/* Compare the volume ID with path name */
 				c = *sp++; tc = *(++tp);
@@ -3652,7 +3764,7 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 /*-----------------------------------------------------------------------*/
 /* Determine logical drive number and mount the volume if needed         */
 /***
- * 找卷标，如果有文件系统的标识符直接返回，如果没有进行相关数据的设置
+ * 找卷标，path的值由于get_ldnumber的原因被修改指向冒号后一个字符，如果有文件系统的标识符直接返回，如果没有进行相关数据的设置
 */
 /*-----------------------------------------------------------------------*/
 
@@ -3673,7 +3785,7 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 
 	/* Get logical drive number */
 	*rfs = 0;
-	/*获取设备驱动号*/
+	/*获取设备驱动号，修改path的值*/
 	vol = get_ldnumber(path);
 	if (vol < 0) 
 	{
