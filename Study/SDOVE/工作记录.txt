@@ -97,3 +97,19 @@ FULL：强制全量化范围
 在未设置的情况下为STANDARD
 （3）唯一定义的视频格式
 
+（4）设备模式
+设备信息的结构体：
+>>Device identity：设备信息
+>>Device configuration：设备的配置信息
+>>Device status：设备状态信息
+>>Device streams：设备流信息
+>>Device subscription:设备订购信息
+>>Device node:设备节点信息
+
+（5）设备的生命周期
+>>设备被发现：产生DEVICE_CONNECTED命令，只是设备查到但是设备其他信息没有获取到
+>>设备信息可用：产生DEVICE_INFO_AVAILABLE事件，获取到设备的所有信息
+>>设备设置发生变化：产生SETTINGS_CHANGED事件，改变设备的状态将会产生此事件
+>>设备丢失：产生DEVICE_DISCONNECTED事件，设备失联
+（6）多视图操作
+>>多视图模式是将输出的显示器最大划分为16*16的矩形块，每个NT2000设备支持32个层，即最大支持32路的视频输入
