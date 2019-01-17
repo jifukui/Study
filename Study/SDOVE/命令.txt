@@ -1,25 +1,143 @@
-require命令
+（1）require命令
 require命令用于设置使用的命令模块和模块的版本
 格式：
 require module_name version
 其中module_name有blueriver_api和multiview
 blueriver_api当前版本为2.14.0.0,multiview的版本为 1.1.0
-event命令
-request命令
-get命令
-get命令用于获取一个设备或者一组设备的信息
-格式: get target subset
-set命令
-set命令用于设置视频的输出的格式
-join命令
+
+（2）event命令
+作用：
+列举最新发生的事件
+命令格式：
+event [last_event_id]
+注意：
+如果last_event_id为null则将显示所有未失效的事件
+
+（3）request命令
+作用：
+根据服务器返回的请求ID查看请求。
+命令格式：
+request request_id
+注意：
+请求ID创建10分钟之后将会失效
+
+（4）get命令
+作用：
+用于获取一个设备或者一组设备的信息
+命令格式: 
+get target subset
+target为目标设备的ID，同时也可以是ALL_TX,ALL,ALL_RX
+（5）set命令
+set edid命令
+作用：
+设置发送设备的EDID数据
+命令格式：
+set target edid data
+target：一个发送设备或者是所有的发送设备
+data:必须是512个十六进制数的字符串
+set gpio命令
+作用：
+设置gpio的方向和输出值
+命令格式：
+set target gpio index mode INPUT
+set target gpio index mode OUTPUT value (0/1)
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+index为gpio的索引号
+注意：
+value只能出现在gpio为OUTPUT时
+set ip命令
+作用：
+设置设备的网络参数
+命令格式：
+set target ip mode [address address ]
+mode MANUAL手动模式，DHCP
+address为ip地址，mask为子网掩码，gateway为网关地址
+set property命令
+作用：
+配置设备的参数
+命令格式：
+set target property key value
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+key的参数名称，value为参数值
+set scaler命令
+作用：
+设置发送设备缩放视频
+命令格式：
+set target scaler size width height
+target为目标设备的ID，同时也可以是ALL_TX,ALL
+width为宽度 height为高度
+set video命令
+作用：
+用于设置接收设备的输出视频参数
+命令格式：
+set target video [display_mode video_args]
+target为目标设备的ID，同时也可以是ALL_TX
+set multiview命令
+作用：
+设置接收设备为multiview模式和使用的布局名以及视频参数
+命令格式：
+set target multiview layout_name [video_args]
+target为目标设备的ID，同时也可以是ALL,ALL_RX
+
+（6）join命令
 join命令主要是用于将源音频、HDMI视频、HDMI音频、I2S音频设置给目的设备
 格式：
-join source:stream_type:index_tx des
-leave命令
-send命令
-start命令
-stop命令
-switch命令
+join source:stream_type:index_tx destination[:subscription_type]:index_rx [display_mode video_args]
+source发送设备的设备ID号
+stream_type:流类型AUDIO,HDMI,HDMI_AUDIO,I2S_AUDIO
+destination:所有的接收设备
+subscription_type的类型必须和stream_type的类型一致
+display_mode video_args用来设置输出视频的参数必须在类型为HDMI的时候使用
+注意：
+在join之前必须设置相关的参数
+
+（7）leave命令
+作用：
+设置接收设备不再订阅此信息
+命令格式：
+leave target:[subscription_type:[index]]
+target为目标设备的ID，同时也可以是ALL,ALL_RX
+subscription_type:AUDIO,HDMI,HDMI_AUDIO,I2S_AUDIO
+
+（8）send命令
+send cec命令
+作用:
+发送cec数据
+命令格式：
+send target cec data_hex
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+send infrared命令
+作用发送红外数据
+命令格式：
+send target infrared data_hex
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+send rs232命令
+作用：
+发送rs232数据
+命令格式：
+send target rs232[:port] data_string
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+
+（9）start命令
+作用：
+开始输出流
+命令格式：
+start target:[stream_type[:index [multicast_addr]]]
+target必须是一个发送设备或者是一组设备的名字
+stream_type AUDIO模拟音频数据流，HDMIHDMI视频流，HDMI_ADUIOHDMI音频，I2S_AUDIOI2S音频流其他流使用switch
+multicast_addr使用的时候target必须是单设备。
+
+（10）stop命令
+作用：
+停止一个或多个设备的一个或多个流，这个操作将会释放组播地址使这个组播地址可以被重复使用
+命令格式：
+stop target:[stream_type[:index]] [free]
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+stream_type:rs232 RS232数据流，INFRARED红外线数据流，AUDIO模拟音频数据流，HDMIHDMI视频流，HDMI_ADUIOHDMI音频，I2S_AUDIOI2S音频流
+index对应类型的流号
+free 是否释放当前是组播地址
+
+（11）switch命令
 switch命令用于设置串口、红外和CEC通道数据的通信通道
 格式：
 (1)switch source:stream_type:index_tx destination [:subscription_type]:index_rx
@@ -37,21 +155,144 @@ subscription_type表示的是目的的流类型
 index_rx表示目的流的索引号
 api表示的是服务器的软件
 dest_ip_address表示目的设备的IP地址
-使用样例：
-layout命令
-mode命令
-program命令
-list命令
-icron命令
-version命令
+
+
+（12）layout命令
+layout create命令
+作用：
+创建布局
+命令格式：
+layout name create size width height
+name为创建布局的名称（自己定义）
+layout delete命令
+作用：
+根据布局名称删除布局
+命令格式:
+layout name delete
+layout descript命令
+作用：
+根据布局名称获取布局的完整的描述
+命令格式：
+layout name descript
+layout surface命令
+作用创建修改删除表面
+命令格式：
+layout name surface index ( position horiz_position vert_position size width height |delete )
+name为布局的名称，
+index为表面的索引号
+position为表面相对于视频数据的起始位置
+size为窗口的大小
+delete用于删除此表面
+注意：
+宽度值必须是32的整数倍
+layout window命令
+作用：
+创建修改删除布局窗口参数
+命令格式：
+layout name window index （[ position horiz_position vert_position size width height ] [offset horiz_position vert_position] [ target ( surface_index|black ) ]|delete）
+name为布局名称
+index为窗口的索引号
+position为窗口相对于屏幕的位置
+size为窗口的大小
+surface_index为此窗口使用的表面的索引号
+black如果使用black窗口显示为黑色
+delete用于删除此窗口
+（13）mode命令
+mode async命令
+作用：
+设置是否打开事件触发提醒
+命令格式：
+mode async [on/off]
+on:打开同步模式
+off：关闭同步模式
+默认为on模式
+mode filter_rs232_event命令
+作用是否过滤rs232事件，即客户端是否接收服务器接收到rs232事件
+命令格式：
+mode filter_rs232_event [on/off]
+on过滤232事件
+off不过滤232事件
+mode split_hdmi_audio命令
+作用：
+是否独立切换HDMI的音频
+命令格式：
+mode split_hdmi_audio [on/off]
+on hdmi独立音频
+off hdmi非独立音频
+
+（14）program命令
+
+（15）list命令
+list firmware命令
+作用：
+列举服务器中支持升级的固件文件
+命令格式：
+list firmware
+list multicast
+作用：
+列举当前可以使用的组播地址
+命令格式：
+list multicast
+list layout命令
+作用：
+列举可以使用的布局名称
+命令格式:
+list layout
+
+（16）icron命令
+作用：
+使能或者是禁能通过芯片上的rs232b设计板上的USB扩展器
+命令格式：
+icron target program firmware rs232 port_index
+icron target program eeprom rs232 port_index
+icron target program none
+命令1是将程序编写到扩展的固件里面
+命令2是将程序编写到非易失内存中
+命令3禁能编写且恢复rs232的正常功能
+
+（17）version命令
+作用：
 用于获取服务器支持的模块及版本
-格式 
+命令格式：
 version
-test命令
-update命令
-factory命令
-factory命令用于设置设备复位到出厂状态。
-格式 factory target
+
+（18）test命令
+test memory命令
+作用：
+测试目标设备的帧数组的内存
+命令格式：
+test target memory
 target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
-reboot命令
-quit命令
+
+（19）update命令
+作用：
+更新设备的固件程序
+命令格式：
+update target filename
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+filename为升级程序的文件名，可以通过list firmware命令获取可以使用的升级文件，升级文件存储在服务器端的update端
+注意：
+（1）更新固件程序过程中服务器将会拒绝各种命令的执行
+（2）固件程序升级的开始和结束状态对应FIRMWARE_UPDATE_START事件和FIRMWARE_UPDATE_COMPLETE事件
+（3）固件程序更新完成后必须向设备发送reboot命令新的程序才会生效
+
+（20）factory命令
+作用：
+设置设备复位到出厂状态。
+命令格式：
+factory target
+target为目标设备的ID，同时也可以是ALL,ALL_TX,ALL_RX
+
+（21）reboot命令
+作用：
+设置目标设备重新启动
+命令格式：
+reboot target
+target：
+可以值具体设备的ID号或者是ALL:所有设备,ALL_RX所有的接收设备，ALL_TX所有的发送设备。
+
+（22）quit命令
+作用：
+关闭当前的会话
+命令格式:
+quit
