@@ -125,7 +125,7 @@ typedef struct {
 	BYTE	pdrv;			/* Associated physical drive  关联的物理驱动器*/
 	BYTE	n_fats;			/* Number of FATs (1 or 2) FAT表的数量*/
 	BYTE	wflag;			/* win[] flag (b0:dirty)  */
-	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) */
+	BYTE	fsi_flag;		/* FSINFO flags (b7:disabled, b0:dirty) 文件信息标志*/
 	WORD	id;				/* Volume mount ID  挂载的卷标*/
 	WORD	n_rootdir;		/* Number of root directory entries (FAT12/16) 根文件目录数量*/
 	WORD	csize;			/* Cluster size [sectors] 簇的大小，一个簇包含几个扇区*/
@@ -162,7 +162,7 @@ typedef struct {
 #if FF_FS_EXFAT
 	DWORD	bitbase;		/* Allocation bitmap base sector */
 #endif
-	DWORD	winsect;		/* Current sector appearing in the win[] */
+	DWORD	winsect;		/* Current sector appearing in the win[] win[]中的数据所在的扇区*/
 	BYTE	win[FF_MAX_SS];	/* Disk access window for Directory, FAT (and file data at tiny cfg) */
 } FATFS;
 
