@@ -168,7 +168,7 @@
 #define FF_VOLUMES		1
 /* Number of volumes (logical drives) to be used. (1-10) */
 
-/*是否使用了卷ID 只是属性字符串*/
+/*是否使用了卷ID 只是属性字符串,这里没有使用字符换的卷标*/
 #define FF_STR_VOLUME_ID	0
 #define FF_VOLUME_STRS		"RAM","NAND","CF","SD","SD2","USB","USB2","USB3"
 /* FF_STR_VOLUME_ID switches support for volume ID in arbitrary strings.

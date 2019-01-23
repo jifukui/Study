@@ -142,7 +142,7 @@ typedef struct {
 	FF_SYNC_t	sobj;		/* Identifier of sync object 同步标识符*/
 #endif
 #if !FF_FS_READONLY
-	DWORD	last_clst;		/* Last allocated cluster 最后一个簇*/
+	DWORD	last_clst;		/* Last allocated cluster 下一个可以使用的扇区*/
 	DWORD	free_clst;		/* Number of free clusters 空闲的簇*/
 #endif
 #if FF_FS_RPATH
@@ -200,8 +200,6 @@ typedef struct {
 	FSIZE_t	fptr;			/* File read/write pointer (Zeroed on file open) 文件读写指针当前读写的位置*/
 	DWORD	clust;			/* Current cluster of fpter (invalid when fptr is 0) 当前读写所在的簇*/
 	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) 当前读写所在的扇区*/
-	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) 当前读写所在的扇区*/
-#if !FF_FS_READONLY
 	DWORD	dir_sect;		/* Sector number containing the directory entry (not used at exFAT) */
 	BYTE*	dir_ptr;		/* Pointer to the directory entry in the win[] (not used at exFAT) */
 #endif

@@ -529,9 +529,8 @@ static const BYTE ExCvt[] = MKCVTBL(TBL_CT, FF_CODE_PAGE);
 
 /*-----------------------------------------------------------------------*/
 /* Load/Store multi-byte word in the FAT structure                       */
-/*从FAT结构体中加载多个字节*/
 /*-----------------------------------------------------------------------*/
-/*从FAT结构体中加载2个字节的数据，应以short的形式返回一个数据*/
+/**将2个8位的数据转换为1个16位的数据并返回这个16位的数据*/
 static WORD ld_word (const BYTE* ptr)	/*	 Load a 2-byte little-endian word */
 {
 	WORD rv;
@@ -540,7 +539,7 @@ static WORD ld_word (const BYTE* ptr)	/*	 Load a 2-byte little-endian word */
 	rv = rv << 8 | ptr[0];
 	return rv;
 }
-/*读取4个字节的内容，返回32位的数据*/
+/*将4个8位的数据转换为1个32位的数据并返回这个32位的数据*/
 static DWORD ld_dword (const BYTE* ptr)	/* Load a 4-byte little-endian word */
 {
 	DWORD rv;
@@ -552,13 +551,14 @@ static DWORD ld_dword (const BYTE* ptr)	/* Load a 4-byte little-endian word */
 	return rv;
 }
 
-/*将一个16bit的数据按照小端格式转换为2字节的数据*/
+/*将一个16bit的数据按转换为2字节的数据*/
 static void st_word (BYTE* ptr, WORD val)	/* Store a 2-byte word in little-endian */
 {
-	*ptr++ = (BYTE)val; val >>= 8;
+	*ptr++ = (BYTE)val; 
+	val >>= 8;
 	*ptr++ = (BYTE)val;
 }
-/*将一个32位的数据按照小端格式转换为4个字节的数据*/
+/*将一个32位的数据转换为4个字节的数据*/
 static void st_dword (BYTE* ptr, DWORD val)	/* Store a 4-byte word in little-endian */
 {
 	*ptr++ = (BYTE)val; val >>= 8;
@@ -566,9 +566,6 @@ static void st_dword (BYTE* ptr, DWORD val)	/* Store a 4-byte word in little-end
 	*ptr++ = (BYTE)val; val >>= 8;
 	*ptr++ = (BYTE)val;
 }
-
-
-
 
 /*-----------------------------------------------------------------------*/
 /* String functions                                                      */
@@ -631,7 +628,9 @@ static int chk_chr (const char* str, int chr)	/* NZ:contained, ZR:not contained 
 
 
 /* Test if the character is DBC 1st byte */
-/***判断DBC的第一个字节*/
+/***判断DBC的第一个字节
+ * 这里使用的是437所有一直不是有效的
+*/
 static int dbc_1st (BYTE c)
 {
 						/* SBCS fixed code page */
@@ -644,7 +643,8 @@ static int dbc_1st (BYTE c)
 
 
 /* Test if the character is DBC 2nd byte */
-/****判断是否是DBC的有效的第二个字符**/
+/****判断是否是DBC的有效的第二个字符
+ * 这里使用的是437所以一直都不是有效的**/
 static int dbc_2nd (BYTE c)
 {
 						/* SBCS fixed code page */
@@ -669,7 +669,7 @@ static DWORD tchar2uni (	/* Returns character in UTF-16 encoding (>=0x10000 on d
 	WCHAR wc;
 
 	wc = (BYTE)*p++;			/* Get a byte */
-	/*只有两个都是*/
+	/**由于支持的是437所以这两个返回的都是0*/
 	if (dbc_1st((BYTE)wc)) 
 	{	/* Is it a DBC 1st byte? */
 		b = (BYTE)*p++;			/* Get 2nd byte */
@@ -681,6 +681,7 @@ static DWORD tchar2uni (	/* Returns character in UTF-16 encoding (>=0x10000 on d
 	}
 	if (wc != 0) 
 	{
+		/**现在的情况应该是直接返回的是ASCII码*/
 		wc = ff_oem2uni(wc, CODEPAGE);	/* ANSI/OEM ==> Unicode */
 		if (wc == 0) 
 		{
@@ -711,7 +712,10 @@ static BYTE put_utf (	/* Returns number of encoding units written (0:buffer over
 	wc = ff_uni2oem(chr, CODEPAGE);
 	if (wc >= 0x100) 
 	{	/* Is this a DBC? */
-		if (szb < 2) return 0;
+		if (szb < 2) 
+		{
+			return 0;
+		}
 		*buf++ = (char)(wc >> 8);	/* Store DBC 1st byte */
 		*buf++ = (TCHAR)wc;			/* Store DBC 2nd byte */
 		return 2;
@@ -970,10 +974,6 @@ static FRESULT move_window (	/* Returns FR_OK or FR_DISK_ERR */
 	return res;
 }
 
-
-
-
-
 /*-----------------------------------------------------------------------*/
 /* Synchronize filesystem and data on the storage                        */
 /**同步数据，这个程序在FAT12系统中应该没有什么作用就是进行数据的同步*/
@@ -1022,9 +1022,6 @@ static DWORD clst2sect (	/* !=0:Sector number, 0:Failed (invalid cluster#) */
 	/**返回此文件内容扇区的位置*/
 	return fs->database + fs->csize * clst;		/* Start sector number of the cluster */
 }
-
-
-
 
 /*-----------------------------------------------------------------------*/
 /* FAT access - Read value of a FAT entry                                */
@@ -1139,13 +1136,13 @@ static FRESULT put_fat (	/* FR_OK(0):succeeded, !=0:error */
 
 /*-----------------------------------------------------------------------*/
 /* FAT handling - Remove a cluster chain                                 */
-/***主要用于清除对应文件在FAT表中的记录*/
+/***主要用于清除对应文件在FAT表中的记录并在FAT表中清除此文件所有对应的簇的编号*/
 /*-----------------------------------------------------------------------*/
 
 static FRESULT remove_chain (	/* FR_OK(0):succeeded, !=0:error */
-	FFOBJID* obj,		/* Corresponding object */
-	DWORD clst,			/* Cluster to remove a chain from */
-	DWORD pclst			/* Previous cluster of clst (0 if entire chain) */
+	FFOBJID* obj,		/* Corresponding object F文件系统对象*/
+	DWORD clst,			/* Cluster to remove a chain from 簇编号*/
+	DWORD pclst			/* Previous cluster of clst (0 if entire chain) clst之前的簇*/
 )
 {
 	FRESULT res = FR_OK;
@@ -1159,7 +1156,7 @@ static FRESULT remove_chain (	/* FR_OK(0):succeeded, !=0:error */
 		return FR_INT_ERR;
 	}
 	/* Mark the previous cluster 'EOC' on the FAT if it exists */
-	/**一般的情况下是不会到这里*/
+	/**一般的情况下是不会到这里，因为pclst的值为0*/
 	if (pclst != 0 && (!FF_FS_EXFAT || fs->fs_type != FS_EXFAT || obj->stat != 2)) 
 	{
 		res = put_fat(fs, pclst, 0xFFFFFFFF);
@@ -1228,7 +1225,8 @@ static FRESULT remove_chain (	/* FR_OK(0):succeeded, !=0:error */
 
 /*-----------------------------------------------------------------------*/
 /* FAT handling - Stretch a chain or Create a new chain                  */
-/**在FAT表中创建链*/
+/**用于获取是否有可用的扇区如果有可用的扇区，在传入扇区的位置写上下一个可用的扇区
+ * 并返回下一个可用的扇区并跟新文件系统中下一个可使用的扇区*/
 /*-----------------------------------------------------------------------*/
 
 static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:Disk error, >=2:New cluster# */
@@ -1236,21 +1234,27 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 	DWORD clst			/* Cluster# to stretch, 0:Create a new chain */
 )
 {
-	DWORD cs, ncl, scl;
+	DWORD cs;//扇区的状态
+	DWORD ncl;//下一个可用的扇区
+	DWORD scl;//开始扇区
 	FRESULT res;
 	FATFS *fs = obj->fs;
 
-
+	/***根据传入的扇区的值和文件系统下一个可以使用的扇区的设置scl的值*/
 	if (clst == 0) 
-	{	/* Create a new chain */
-		scl = fs->last_clst;				/* Suggested cluster to start to find */
+	{	
+		/* Create a new chain */
+		/***得到下一个可以使用的扇区*/
+		scl = fs->last_clst;				
+		/* Suggested cluster to start to find */
 		if (scl == 0 || scl >= fs->n_fatent) 
 		{
 			scl = 1;
 		}
 	}
 	else 
-	{				/* Stretch a chain */
+	{				
+		/* Stretch a chain */
 		cs = get_fat(obj, clst);			/* Check the cluster status */
 		if (cs < 2) 				/* Test for insanity */
 		{
@@ -1264,6 +1268,7 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 		{
 			return cs;
 		}
+		/**设置需要写的扇区*/
 		scl = clst;							/* Cluster to start to find */
 	}
 	/**没有剩余的*/
@@ -1272,68 +1277,76 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 		return 0;
 	}
 
-	{	/* On the FAT/FAT32 volume */
-		ncl = 0;
-		if (scl == clst) 
-		{						/* Stretching an existing chain? */
-			ncl = scl + 1;						/* Test if next cluster is free */
-			if (ncl >= fs->n_fatent) 
-			{
-				ncl = 2;
-			}
-			cs = get_fat(obj, ncl);				/* Get next cluster status */
-			if (cs == 1 || cs == 0xFFFFFFFF) 	/* Test for error */
-			{
-				return cs;
-			}
-			if (cs != 0) 
-			{						/* Not free? */
-				cs = fs->last_clst;				/* Start at suggested cluster if it is valid */
-				if (cs >= 2 && cs < fs->n_fatent) 
-				{
-					scl = cs;
-				}
-				ncl = 0;
-			}
+	ncl = 0;
+	/**这个针对的是不在文件开始写文件*/
+	if (scl == clst) 
+	{						/* Stretching an existing chain? */
+		ncl = scl + 1;						
+		/* Test if next cluster is free */
+		if (ncl >= fs->n_fatent) 
+		{
+			ncl = 2;
 		}
-		if (ncl == 0) 
-		{	/* The new cluster cannot be contiguous and find another fragment */
-			ncl = scl;	/* Start cluster */
-			for (;;) 
+		cs = get_fat(obj, ncl);				/* Get next cluster status */
+		if (cs == 1 || cs == 0xFFFFFFFF) 	/* Test for error */
+		{
+			return cs;
+		}
+		/**扇区的状态值不为0表示不在0扇区是正常的扇区*/
+		if (cs != 0) 
+		{						
+			/* Not free? */
+			cs = fs->last_clst;				
+			/* Start at suggested cluster if it is valid */
+			if (cs >= 2 && cs < fs->n_fatent) 
 			{
-				ncl++;							/* Next cluster */
-				if (ncl >= fs->n_fatent) 
-				{		/* Check wrap-around */
-					ncl = 2;
-					if (ncl > scl) 	/* No free cluster found? */
-					{
-						return 0;
-					}
-				}
-				cs = get_fat(obj, ncl);			/* Get the cluster status */
-				if (cs == 0) 				/* Found a free cluster? */
-				{
-					break;
-				}
-				if (cs == 1 || cs == 0xFFFFFFFF) 	/* Test for error */
-				{
-					return cs;
-				}
-				if (ncl == scl) 		/* No free cluster found? */
+				scl = cs;
+			}
+			ncl = 0;
+		}
+	}
+	/**在文件的开始处写*/
+	if (ncl == 0) 
+	{	/* The new cluster cannot be contiguous and find another fragment */
+		ncl = scl;	/* Start cluster */
+		for (;;) 
+		{
+			ncl++;							/* Next cluster */
+			if (ncl >= fs->n_fatent) 
+			{		/* Check wrap-around */
+				ncl = 2;
+				if (ncl > scl) 	/* No free cluster found? */
 				{
 					return 0;
 				}
 			}
+			cs = get_fat(obj, ncl);			/* Get the cluster status */
+			if (cs == 0) 				/* Found a free cluster? */
+			{
+				/***应该要在这里进行返回及找到了空闲的扇区*/
+				break;
+			}
+			if (cs == 1 || cs == 0xFFFFFFFF) 	/* Test for error */
+			{
+				return cs;
+			}
+			if (ncl == scl) 		/* No free cluster found? */
+			{
+				return 0;
+			}
 		}
-		res = put_fat(fs, ncl, 0xFFFFFFFF);		/* Mark the new cluster 'EOC' */
-		if (res == FR_OK && clst != 0) 
-		{
-			res = put_fat(fs, clst, ncl);		/* Link it from the previous one if needed */
-		}
+	}
+	/**在空闲扇区处写文件结束标志*/
+	res = put_fat(fs, ncl, 0xFFFFFFFF);		/* Mark the new cluster 'EOC' */
+	/***这里是clst不为0时的处理*/
+	if (res == FR_OK && clst != 0) 
+	{
+		res = put_fat(fs, clst, ncl);		/* Link it from the previous one if needed */
 	}
 
 	if (res == FR_OK) 
-	{			/* Update FSINFO if function succeeded. */
+	{			
+		/* Update FSINFO if function succeeded. */
 		fs->last_clst = ncl;
 		if (fs->free_clst <= fs->n_fatent - 2) 
 		{
@@ -1345,14 +1358,9 @@ static DWORD create_chain (	/* 0:No free cluster, 1:Internal error, 0xFFFFFFFF:D
 	{
 		ncl = (res == FR_DISK_ERR) ? 0xFFFFFFFF : 1;	/* Failed. Generate error status */
 	}
-
+	/**返回下一个可以使用的扇区*/
 	return ncl;		/* Return new cluster number or error status */
 }
-
-
-
-
-
 
 #if FF_USE_FASTSEEK
 /*-----------------------------------------------------------------------*/
@@ -1436,15 +1444,9 @@ static FRESULT dir_sdi (	/* FR_OK(0):succeeded, !=0:error */
 {
 	DWORD csz, clst;
 	FATFS *fs = dp->obj.fs;
-
-	/***判断偏移位置是否正确*/
-	if (ofs >= (DWORD)((FF_FS_EXFAT && fs->fs_type == FS_EXFAT) ? MAX_DIR_EX : MAX_DIR) || ofs % SZDIRE) 
-	{	
-		/* Check range of offset and alignment */
-		return FR_INT_ERR;
-	}
 	dp->dptr = ofs;				/* Set current offset 设置偏移值*/
 	clst = dp->obj.sclust;		/* Table start cluster (0:root) 获取开始簇*/
+
 	if (clst == 0 && fs->fs_type >= FS_FAT32) 
 	{	/* Replace cluster# 0 with root cluster# */
 		clst = fs->dirbase;
@@ -2402,11 +2404,15 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	const TCHAR** path			/* Pointer to pointer to the segment in the path string */
 )
 {
-	BYTE b, cf;
-	WCHAR wc;
+	BYTE b;
+	BYTE cf;
+	WCHAR wc;//字符
 	WCHAR *lfn;//长文件名
-	DWORD uc;//
-	UINT i, ni, si, di;
+	DWORD uc;//字符
+	UINT i;
+	UINT ni;
+	UINT si;
+	UINT di;//长文件名偏移指针
 	const TCHAR *p;
 
 
@@ -2449,6 +2455,7 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 		/***存储值的低位在长文件名数组中**/
 		lfn[di++] = wc;					/* Store the Unicode character */
 	}
+	/**找到第一个非斜杠字符，并将指针指向下一个*/
 	while (*p == '/' || *p == '\\') 	/* Skip duplicated separators if exist */
 	{
 		p++;
@@ -2458,21 +2465,6 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 	*path = p;							/* Return pointer to the next segment */
 	/**设置是否是最后一段*/
 	cf = (wc < ' ') ? NS_LAST : 0;		/* Set last segment flag if end of the path */
-
-#if FF_FS_RPATH != 0
-	if ((di == 1 && lfn[di - 1] == '.') ||
-		(di == 2 && lfn[di - 1] == '.' && lfn[di - 2] == '.')) 
-	{	/* Is this segment a dot name? */
-		lfn[di] = 0;
-		for (i = 0; i < 11; i++) 
-		{		
-			/* Create dot name for SFN entry */
-			dp->fn[i] = (i < di) ? '.' : ' ';
-		}
-		dp->fn[i] = cf | NS_DOT;		/* This is a dot entry */
-		return FR_OK;
-	}
-#endif
 	/***获取文件名中最后一个字符，并设置为0*/
 	while (di) 
 	{						
@@ -2663,6 +2655,7 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 	if ((UINT)*path < ' ') 
 	{				
 		/* Null path name is the origin directory itself */
+		/**文件名的最后一个字节表示文件的属性*/
 		dp->fn[NSFLAG] = NS_NONAME;
 		res = dir_sdi(dp, 0);
 
@@ -2710,8 +2703,6 @@ static FRESULT follow_path (	/* FR_OK(0): successful, !=0: error code */
 				res = FR_NO_PATH; 
 				break;
 			}
-
-			
 			dp->obj.sclust = ld_clust(fs, fs->win + dp->dptr % SS(fs));	/* Open next directory */
 			
 		}
@@ -2738,10 +2729,6 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 	TCHAR tc;
 	int i;
 	int vol = -1;
-#if FF_STR_VOLUME_ID		/* Find string volume ID */
-	const char *sp;
-	char c;
-#endif
 
 	tt = tp = *path;
 	/***判断path指针是否是空指针*/
@@ -2766,30 +2753,7 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 			/**得到逻辑卷标号*/
 			i = (int)*tp - '0';	/* Get the LD number */
 		}
-#if FF_STR_VOLUME_ID == 1	/* Arbitrary string is enabled */
-		else 
-		{
-			i = 0;
-			do 
-			{
-				sp = VolumeStr[i]; 
-				tp = *path;	/* This string volume ID and path name */
-				do 
-				{	/* Compare the volume ID with path name */
-					c = *sp++; 
-					tc = *tp++;
-					if (IsLower(c))
-					{
-						 c -= 0x20;
-					}
-					if (IsLower(tc)) 
-					{
-						tc -= 0x20;
-					}
-				} while (c && (TCHAR)c == tc);
-			} while ((c || tp != tt) && ++i < FF_VOLUMES);	/* Repeat for each id until pattern match */
-		}
-#endif
+
 		if (i < FF_VOLUMES) 
 		{	/* If a volume ID is found, get the drive number and strip it */
 			/**设置设备号*/
@@ -2800,35 +2764,6 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 		/*如果获得了逻辑卷ID返回卷ID和路径*/
 		return vol;
 	}
-#if FF_STR_VOLUME_ID == 2		/* Unix style volume ID is enabled */
-	/*如果没有找到冒号*/
-	if (*tp == '/') 
-	{
-		i = 0;
-		do {
-			sp = VolumeStr[i]; 
-			tp = *path;	/* This string volume ID and path name */
-			do 
-			{	/* Compare the volume ID with path name */
-				c = *sp++; tc = *(++tp);
-				if (IsLower(c))
-				{
-					c -= 0x20;
-				}
-				if (IsLower(tc))
-				{
-					tc -= 0x20;
-				}
-			} while (c && (TCHAR)c == tc);
-		} while ((c || (tc != '/' && (UINT)tc >= (FF_USE_LFN ? ' ' : '!'))) && ++i < FF_VOLUMES);	/* Repeat for each ID until pattern match */
-		if (i < FF_VOLUMES) 
-		{	/* If a volume ID is found, get the drive number and strip it */
-			vol = i;		/* Drive number */
-			*path = tp;		/* Snip the drive prefix off */
-			return vol;
-		}
-	}
-#endif
 	/* No drive prefix is found */
 #if FF_FS_RPATH != 0
 	vol = CurrVol;	/* Default drive is current drive */
@@ -2843,7 +2778,9 @@ static int get_ldnumber (	/* Returns logical drive number (-1:invalid drive numb
 
 /*-----------------------------------------------------------------------*/
 /* Load a sector and check if it is an FAT VBR                           */
-/**加载扇区，主要是在初始化的时候判断文件系统的引导扇区是否是有效的引导扇区*/
+/**加载扇区，主要是在初始化的时候判断文件系统的引导扇区是否是有效的引导扇区并返回
+ * 文件系统的类型
+*/
 /*-----------------------------------------------------------------------*/
 
 static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:Disk error */
@@ -2882,7 +2819,8 @@ static BYTE check_fs (	/* 0:FAT, 1:exFAT, 2:Valid BS but not FAT, 3:Not a BS, 4:
 /*-----------------------------------------------------------------------*/
 /* Determine logical drive number and mount the volume if needed         */
 /***
- * 找卷标，path的值由于get_ldnumber的原因被修改指向冒号后一个字符，如果有文件系统的标识符直接返回，如果没有进行相关数据的设置
+ * 找卷标，path的值由于get_ldnumber的原因被修改指向冒号后一个字符，如果有文件系
+ * 统的标识符直接返回，如果没有进行相关数据的设置
 */
 /*-----------------------------------------------------------------------*/
 
@@ -2971,11 +2909,6 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 	{ /* Check disk write protection if needed */
 		return FR_WRITE_PROTECTED;
 	}
-#if FF_MAX_SS != FF_MIN_SS				/* Get sector size (multiple sector size cfg only) */
-	if (disk_ioctl(fs->pdrv, GET_SECTOR_SIZE, &SS(fs)) != RES_OK) return FR_DISK_ERR;
-	if (SS(fs) > FF_MAX_SS || SS(fs) < FF_MIN_SS || (SS(fs) & (SS(fs) - 1))) return FR_DISK_ERR;
-#endif
-
 	/* Find an FAT partition on the drive. Supports only generic partitioning rules, FDISK (MBR) and SFD (w/o partition). */
 	bsect = 0;
 	/**获取文件系统的MBR，并且验证是否是有效的文件系统以及是否是FAT/FAT32*/
@@ -3006,153 +2939,118 @@ static FRESULT find_volume (	/* FR_OK(0): successful, !=0: an error occurred */
 
 	/* An FAT volume is found (bsect). Following code initializes the filesystem object */
 	
-		/***如果文件系统的扇区大小不等于定义的扇区文件大小处理*/
-		if (ld_word(fs->win + BPB_BytsPerSec) != SS(fs)) 	/* (BPB_BytsPerSec must be equal to the physical sector size) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		/***获取FAT表的扇区大小*/
-		fasize = ld_word(fs->win + BPB_FATSz16);		/* Number of sectors per FAT */
-		if (fasize == 0) 
-		{
-			/***如果上述的值为0使用这个作为FAT表的扇区大小*/
-			fasize = ld_dword(fs->win + BPB_FATSz32);
-		}
-		/***设置FAT表的大小**/
-		fs->fsize = fasize;
-		/****设置FAT表的数量**/
-		fs->n_fats = fs->win[BPB_NumFATs];				/* Number of FATs */
-		/***判断FAT表的数量是否正确**/
-		if (fs->n_fats != 1 && fs->n_fats != 2) 	/* (Must be 1 or 2) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		fasize *= fs->n_fats;							/* Number of sectors for FAT area */
-		/***获取每簇的扇区数量*/
-		fs->csize = fs->win[BPB_SecPerClus];			/* Cluster size */
-		/***判断是否是有效的每簇扇区数量，必须是2的次方*/
-		if (fs->csize == 0 || (fs->csize & (fs->csize - 1))) 	/* (Must be power of 2) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		/******获取根目录的项目数量*/
-		fs->n_rootdir = ld_word(fs->win + BPB_RootEntCnt);	/* Number of root directory entries */
-		/***根目录的项目数量是否是32字节对其，是否符合要求*/
-		if (fs->n_rootdir % (SS(fs) / SZDIRE)) 	/* (Must be sector aligned) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		/***扇区的数量*/
-		tsect = ld_word(fs->win + BPB_TotSec16);		/* Number of sectors on the volume */
-		if (tsect == 0) 
-		{
-			tsect = ld_dword(fs->win + BPB_TotSec32);
-		}
-		/***引导扇区占用的扇区数量**/
-		nrsv = ld_word(fs->win + BPB_RsvdSecCnt);		/* Number of reserved sectors */
-		if (nrsv == 0) 			/* (Must not be 0) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
+	/***如果文件系统的扇区大小不等于定义的扇区文件大小处理*/
+	if (ld_word(fs->win + BPB_BytsPerSec) != SS(fs)) 	/* (BPB_BytsPerSec must be equal to the physical sector size) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	/***获取FAT表的扇区大小*/
+	fasize = ld_word(fs->win + BPB_FATSz16);		/* Number of sectors per FAT */
+	if (fasize == 0) 
+	{
+		/***如果上述的值为0使用这个作为FAT表的扇区大小*/
+		fasize = ld_dword(fs->win + BPB_FATSz32);
+	}
+	/***设置FAT表的大小**/
+	fs->fsize = fasize;
+	/****设置FAT表的数量**/
+	fs->n_fats = fs->win[BPB_NumFATs];				/* Number of FATs */
+	/***判断FAT表的数量是否正确**/
+	if (fs->n_fats != 1 && fs->n_fats != 2) 	/* (Must be 1 or 2) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	fasize *= fs->n_fats;							/* Number of sectors for FAT area */
+	/***获取每簇的扇区数量*/
+	fs->csize = fs->win[BPB_SecPerClus];			/* Cluster size */
+	/***判断是否是有效的每簇扇区数量，必须是2的次方*/
+	if (fs->csize == 0 || (fs->csize & (fs->csize - 1))) 	/* (Must be power of 2) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	/******获取根目录的项目数量*/
+	fs->n_rootdir = ld_word(fs->win + BPB_RootEntCnt);	/* Number of root directory entries */
+	/***根目录的项目数量是否是32字节对其，是否符合要求*/
+	if (fs->n_rootdir % (SS(fs) / SZDIRE)) 	/* (Must be sector aligned) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	/***扇区的数量*/
+	tsect = ld_word(fs->win + BPB_TotSec16);		/* Number of sectors on the volume */
+	if (tsect == 0) 
+	{
+		tsect = ld_dword(fs->win + BPB_TotSec32);
+	}
+	/***引导扇区占用的扇区数量**/
+	nrsv = ld_word(fs->win + BPB_RsvdSecCnt);		/* Number of reserved sectors */
+	if (nrsv == 0) 			/* (Must not be 0) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
 
-		/* Determine the FAT sub type */
-		/**计算引导扇区，FAT的扇区和根目录系统占用的扇区数量*/
-		sysect = nrsv + fasize + fs->n_rootdir / (SS(fs) / SZDIRE);	/* RSV + FAT + DIR */
-		/***总扇区是否正确*/
-		if (tsect < sysect) 	/* (Invalid volume size) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		/***获取可以装文件的数量*/
-		nclst = (tsect - sysect) / fs->csize;			/* Number of clusters */
-		if (nclst == 0) 		/* (Invalid volume size) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-		fmt = 0;
-		if (nclst <= MAX_FAT32) 
-		{
-			fmt = FS_FAT32;
-		}
-		if (nclst <= MAX_FAT16) 
-		{
-			fmt = FS_FAT16;
-		}
-		if (nclst <= MAX_FAT12) 
-		{
-			fmt = FS_FAT12;
-		}
-		if (fmt == 0) 
-		{
-			return FR_NO_FILESYSTEM;
-		}
+	/* Determine the FAT sub type */
+	/**计算引导扇区，FAT的扇区和根目录系统占用的扇区数量*/
+	sysect = nrsv + fasize + fs->n_rootdir / (SS(fs) / SZDIRE);	/* RSV + FAT + DIR */
+	/***总扇区是否正确*/
+	if (tsect < sysect) 	/* (Invalid volume size) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	/***获取可以装文件的数量*/
+	nclst = (tsect - sysect) / fs->csize;			/* Number of clusters */
+	if (nclst == 0) 		/* (Invalid volume size) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	fmt = 0;
+	if (nclst <= MAX_FAT32) 
+	{
+		fmt = FS_FAT32;
+	}
+	if (nclst <= MAX_FAT16) 
+	{
+		fmt = FS_FAT16;
+	}
+	if (nclst <= MAX_FAT12) 
+	{
+		fmt = FS_FAT12;
+	}
+	if (fmt == 0) 
+	{
+		return FR_NO_FILESYSTEM;
+	}
 
-		/* Boundaries and Limits */
-		/**设置根目录目录项的数量**/
-		fs->n_fatent = nclst + 2;						/* Number of FAT entries */
-		/**设置引导扇区其实扇区**/
-		fs->volbase = bsect;							/* Volume start sector */
-		/****设置FAT表的起始扇区**/
-		fs->fatbase = bsect + nrsv; 					/* FAT start sector */
-		/****设置数据表的起始扇区***/
-		fs->database = bsect + sysect;					/* Data start sector */
-		/***对文件系统是FAT32的处理*/
-		if (fmt == FS_FAT32) 
-		{
-			if (ld_word(fs->win + BPB_FSVer32) != 0) 	/* (Must be FAT32 revision 0.0) */
-			{
-				return FR_NO_FILESYSTEM;
-			}
-			if (fs->n_rootdir != 0) 	/* (BPB_RootEntCnt must be 0) */
-			{
-				return FR_NO_FILESYSTEM;
-			}
-			fs->dirbase = ld_dword(fs->win + BPB_RootClus32);	/* Root directory start cluster */
-			szbfat = fs->n_fatent * 4;					/* (Needed FAT size) */
-		} 
-		else 
-		{
-			if (fs->n_rootdir == 0)		/* (BPB_RootEntCnt must not be 0) */
-			{
-				return FR_NO_FILESYSTEM;
-			}
-			/****设置根目录区的起始扇区**/
-			fs->dirbase = fs->fatbase + fasize;			/* Root directory start sector */
-			szbfat = (fmt == FS_FAT16) ?				/* (Needed FAT size) */
-				fs->n_fatent * 2 : fs->n_fatent * 3 / 2 + (fs->n_fatent & 1);
-		}
-		if (fs->fsize < (szbfat + (SS(fs) - 1)) / SS(fs)) 	/* (BPB_FATSz must not be less than the size needed) */
-		{
-			return FR_NO_FILESYSTEM;
-		}
-
-#if !FF_FS_READONLY
-		/* Get FSInfo if available */
-		/***设置最后一个簇和空闲簇的数量**/
-		fs->last_clst = fs->free_clst = 0xFFFFFFFF;		/* Initialize cluster allocation information */
-		/**设置文件系统信息标志为为0x80*/
-		fs->fsi_flag = 0x80;
-#if (FF_FS_NOFSINFO & 3) != 3
-		if (fmt == FS_FAT32				/* Allow to update FSInfo only if BPB_FSInfo32 == 1 */
-			&& ld_word(fs->win + BPB_FSInfo32) == 1
-			&& move_window(fs, bsect + 1) == FR_OK)
-		{
-			fs->fsi_flag = 0;
-			if (ld_word(fs->win + BS_55AA) == 0xAA55	/* Load FSInfo data if available */
-				&& ld_dword(fs->win + FSI_LeadSig) == 0x41615252
-				&& ld_dword(fs->win + FSI_StrucSig) == 0x61417272)
-			{
-#if (FF_FS_NOFSINFO & 1) == 0
-				fs->free_clst = ld_dword(fs->win + FSI_Free_Count);
-#endif
-#if (FF_FS_NOFSINFO & 2) == 0
-				fs->last_clst = ld_dword(fs->win + FSI_Nxt_Free);
-#endif
-			}
-		}
-#endif	/* (FF_FS_NOFSINFO & 3) != 3 */
-#endif	/* !FF_FS_READONLY */
+	/* Boundaries and Limits */
+	/**设置根目录目录项的数量**/
+	fs->n_fatent = nclst + 2;						/* Number of FAT entries */
+	/**设置引导扇区起始扇区**/
+	fs->volbase = bsect;							/* Volume start sector */
+	/****设置FAT表的起始扇区**/
+	fs->fatbase = bsect + nrsv; 					/* FAT start sector */
+	/****设置数据表的起始扇区***/
+	fs->database = bsect + sysect;					/* Data start sector */
+	/***对文件系统是FAT32的处理*/
 	
+		
+	if (fs->n_rootdir == 0)		/* (BPB_RootEntCnt must not be 0) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+	/****设置根目录区的起始扇区**/
+	fs->dirbase = fs->fatbase + fasize;			/* Root directory start sector */
+	szbfat = (fmt == FS_FAT16) ?				/* (Needed FAT size) */
+	fs->n_fatent * 2 : fs->n_fatent * 3 / 2 + (fs->n_fatent & 1);
+
+	if (fs->fsize < (szbfat + (SS(fs) - 1)) / SS(fs)) 	/* (BPB_FATSz must not be less than the size needed) */
+	{
+		return FR_NO_FILESYSTEM;
+	}
+
+	/* Get FSInfo if available */
+	/***设置最后一个簇和空闲簇的数量**/
+	fs->last_clst = fs->free_clst = 0xFFFFFFFF;		/* Initialize cluster allocation information */
+	/**设置文件系统信息标志为为0x80*/
+	fs->fsi_flag = 0x80;
 	/**设置文件系统的类型*/
 	fs->fs_type = fmt;		/* FAT sub-type */
 	/***设置挂载的ID*/
@@ -3307,13 +3205,8 @@ FRESULT f_open (
 	FRESULT res;
 	DIR dj;//目录对象
 	FATFS *fs;//文件系统对象
-#if !FF_FS_READONLY
 	DWORD dw, cl, bcs, clst, sc;
 	FSIZE_t ofs;
-#endif
-	DEF_NAMBUF
-
-
 	if (!fp) 
 	{
 		return FR_INVALID_OBJECT;
@@ -3438,24 +3331,6 @@ FRESULT f_open (
 			}
 #endif
 		}
-#else		/* R/O configuration */
-		if (res == FR_OK) 
-		{
-			if (dj.fn[NSFLAG] & NS_NONAME) 
-			{	/* Is it origin directory itself? */
-				res = FR_INVALID_NAME;
-			} 
-			else 
-			{
-				if (dj.obj.attr & AM_DIR) 
-				{		
-					/* Is it a directory? */
-					res = FR_NO_FILE;
-				}
-			}
-		}
-#endif
-
 		if (res == FR_OK) 
 		{
 
@@ -3472,7 +3347,6 @@ FRESULT f_open (
 			fp->err = 0;			/* Clear error flag */
 			fp->sect = 0;			/* Invalidate current data sector */
 			fp->fptr = 0;			/* Set file pointer top of the file */
-#if !FF_FS_READONLY
 #if !FF_FS_TINY
 			mem_set(fp->buf, 0, sizeof fp->buf);	/* Clear sector buffer */
 #endif
@@ -3512,7 +3386,6 @@ FRESULT f_open (
 					}
 				}
 			}
-#endif
 		}
 
 		FREE_NAMBUF();
