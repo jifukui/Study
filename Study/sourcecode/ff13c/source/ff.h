@@ -175,7 +175,7 @@ typedef struct {
 	WORD	id;				/* Hosting volume mount ID */
 	BYTE	attr;			/* Object attribute */
 	BYTE	stat;			/* Object chain status (b1-0: =0:not contiguous, =2:contiguous, =3:fragmented in this session, b2:sub-directory stretched) */
-	DWORD	sclust;			/* Object data start cluster (0:no cluster or root directory) 开始簇*/
+	DWORD	sclust;			/* Object data start cluster (0:no cluster or root directory) 所在簇*/
 	FSIZE_t	objsize;		/* Object size (valid when sclust != 0) 文件的大小*/
 #if FF_FS_EXFAT
 	DWORD	n_cont;			/* Size of first fragment - 1 (valid when stat == 3) */
@@ -199,6 +199,7 @@ typedef struct {
 	BYTE	err;			/* Abort flag (error code) 错误标志*/
 	FSIZE_t	fptr;			/* File read/write pointer (Zeroed on file open) 文件读写指针当前读写的位置*/
 	DWORD	clust;			/* Current cluster of fpter (invalid when fptr is 0) 当前读写所在的簇*/
+	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) 当前读写所在的扇区*/
 	DWORD	sect;			/* Sector number appearing in buf[] (0:invalid) 当前读写所在的扇区*/
 #if !FF_FS_READONLY
 	DWORD	dir_sect;		/* Sector number containing the directory entry (not used at exFAT) */

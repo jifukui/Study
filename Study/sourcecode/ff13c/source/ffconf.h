@@ -263,7 +263,7 @@
 /  0:  Disable file lock function. To avoid volume corruption, application program
 /      should avoid illegal open, remove and rename to the open objects.
 /  >0: Enable file lock function. The value defines how many files/sub-directories
-/      can be opened simultaneously under file lock control. Note that the file
+/      can be opened 6 under file lock control. Note that the file
 /      lock control is independent of re-entrancy. */
 
 /*是否支持文件重入*/
