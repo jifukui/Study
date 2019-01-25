@@ -2405,7 +2405,7 @@ static FRESULT create_name (	/* FR_OK: successful, FR_INVALID_NAME: could not cr
 )
 {
 	BYTE b;
-	BYTE cf;
+	BYTE cf;//标志
 	WCHAR wc;//字符
 	WCHAR *lfn;//长文件名
 	DWORD uc;//字符
@@ -3222,10 +3222,8 @@ FRESULT f_open (
 	{
 		/***读取文件系统类型*/
 		dj.obj.fs = fs;
-		INIT_NAMBUF(fs);
 		/**是否能在此路径获取此文件*/
 		res = follow_path(&dj, path);	/* Follow the file path */
-#if !FF_FS_READONLY	/* Read/Write configuration */
 		if (res == FR_OK) 
 		{
 			if (dj.fn[NSFLAG] & NS_NONAME) 
