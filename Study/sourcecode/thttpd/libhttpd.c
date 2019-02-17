@@ -192,7 +192,7 @@ static long long atoll( const char* str );
 */
 static int sub_process = 0;
 
-
+/****/
 static void check_options( void )
 {
 #if defined(TILDE_MAP_1) && defined(TILDE_MAP_2)
@@ -250,10 +250,11 @@ httpd_server* httpd_initialize(
     httpd_server* hs;
     static char ghnbuf[256];
     char* cp;
-	/*暂时不清楚*/
+	/*暂时不清楚，没有用*/
     check_options();
 	/*申请空间*/
-    hs = NEW( httpd_server, 1 );
+    hs = NEW( httpd_server, 1 );/
+	/****内存分配失败**/
     if ( hs == (httpd_server*) 0 )
 	{
 		syslog( LOG_CRIT, "out of memory allocating an httpd_server" );
@@ -262,7 +263,7 @@ httpd_server* httpd_initialize(
 	/*设置服务器名称*/
     if ( hostname != (char*) 0 )
 	{
-		/*绑定主机名*/
+		/*为主机名分配内存空间并且赋值为hostname的值*/
 		hs->binding_hostname = strdup( hostname );
 		if ( hs->binding_hostname == (char*) 0 )
 	    {
@@ -312,6 +313,7 @@ httpd_server* httpd_initialize(
 	    {
 			++cgi_pattern;
 		}
+		/****设置CGI程序的路径**/
 		hs->cgi_pattern = strdup( cgi_pattern );
 		if ( hs->cgi_pattern == (char*) 0 )
 	    {
@@ -325,8 +327,11 @@ httpd_server* httpd_initialize(
 			(void) ol_strcpy( cp + 1, cp + 2 );
 		}
 	}
+	/******设置CGI最大支持数量**/
     hs->cgi_limit = cgi_limit;
+	/******设置当前使用的CGI的数量**/
     hs->cgi_count = 0;
+	/******设置使用的字符集*/
     hs->charset = strdup( charset );
     hs->p3p = strdup( p3p );
     hs->max_age = max_age;
@@ -403,25 +408,24 @@ httpd_server* httpd_initialize(
 
     /* Done initializing. */
     if ( hs->binding_hostname == (char*) 0 )
-	syslog(
-	    LOG_NOTICE, "%.80s starting on port %d", SERVER_SOFTWARE,
-	    (int) hs->port );
+	{
+		syslog(LOG_NOTICE, "%.80s starting on port %d", SERVER_SOFTWARE,(int) hs->port );
+	}
     else
-	syslog(
-	    LOG_NOTICE, "%.80s starting on %.80s, port %d", SERVER_SOFTWARE,
-	    httpd_ntoa( hs->listen4_fd != -1 ? sa4P : sa6P ),
-	    (int) hs->port );
+	{
+		syslog(LOG_NOTICE, "%.80s starting on %.80s, port %d", SERVER_SOFTWARE,httpd_ntoa( hs->listen4_fd != -1 ? sa4P : sa6P ),(int) hs->port );
+	}
     return hs;
 }
 
-/*初始化socket*/
+/*初始化socket，设置socket描述符的状态并打开监听状态*/
 static int initialize_listen_socket( httpd_sockaddr* saP )
 {
     int listen_fd;
     int on, flags;
 
     /* Check sockaddr. */
-	/*检测是否是支持的IP */
+	/*检测ip类型是否正确 */
     if ( ! sockaddr_check( saP ) )
 	{
 		syslog( LOG_CRIT, "unknown sockaddr family on listen socket" );
@@ -436,15 +440,18 @@ static int initialize_listen_socket( httpd_sockaddr* saP )
 		syslog( LOG_CRIT, "socket %.80s - %m", httpd_ntoa( saP ) );
 		return -1;
 	}
-	/*设置socket的属性*/
+	/*设置socket的属性，调用exec的时候关闭文件描述符*/
     (void) fcntl( listen_fd, F_SETFD, 1 );
 
     /* Allow reuse of local addresses. */
+	/***设置一个socket可以绑定多个地址不同的连接，同时关闭连接时不需要等待TIME_WAIT时间*/
     on = 1;
     if ( setsockopt(
 	     listen_fd, SOL_SOCKET, SO_REUSEADDR, (char*) &on,
 	     sizeof(on) ) < 0 )
-	syslog( LOG_CRIT, "setsockopt SO_REUSEADDR - %m" );
+	{
+		syslog( LOG_CRIT, "setsockopt SO_REUSEADDR - %m" );
+	}
 
     /* Bind to it. */
     if ( bind( listen_fd, &saP->sa, sockaddr_len( saP ) ) < 0 )
@@ -456,6 +463,7 @@ static int initialize_listen_socket( httpd_sockaddr* saP )
 	}
 
     /* Set the listen file descriptor to no-delay / non-blocking mode. */
+	/*****设置文件描述符为非阻塞模式**/
     flags = fcntl( listen_fd, F_GETFL, 0 );
     if ( flags == -1 )
 	{
@@ -497,26 +505,28 @@ static int initialize_listen_socket( httpd_sockaddr* saP )
     return listen_fd;
 }
 
-
-void
-httpd_set_logfp( httpd_server* hs, FILE* logfp )
-    {
+/****设置log文件的文件路径*/
+void httpd_set_logfp( httpd_server* hs, FILE* logfp )
+{
     if ( hs->logfp != (FILE*) 0 )
-	(void) fclose( hs->logfp );
+	{
+		(void) fclose( hs->logfp );
+	}
     hs->logfp = logfp;
-    }
+}
 
-
-void
-httpd_terminate( httpd_server* hs )
-    {
+/********关闭socket，日志文件，释放http对象**/
+void httpd_terminate( httpd_server* hs )
+{
     httpd_unlisten( hs );
     if ( hs->logfp != (FILE*) 0 )
-	(void) fclose( hs->logfp );
+	{
+		(void) fclose( hs->logfp );
+	}
     free_httpd_server( hs );
-    }
+}
 
-
+/******关闭socket**/
 void httpd_unlisten( httpd_server* hs )
 {
     if ( hs->listen4_fd != -1 )
@@ -4272,12 +4282,20 @@ static int sockaddr_check( httpd_sockaddr* saP )
 {
     switch ( saP->sa.sa_family )
 	{
-	case AF_INET: return 1;
+		case AF_INET: 
+		{
+			return 1;
+		}
 #ifdef USE_IPV6
-	case AF_INET6: return 1;
+	case AF_INET6: 
+		{
+			return 1;
+		}
 #endif /* USE_IPV6 */
 	default:
-	return 0;
+		{
+			return 0;	
+		}
 	}
 }
 

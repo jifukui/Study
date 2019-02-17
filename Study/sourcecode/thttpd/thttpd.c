@@ -89,7 +89,7 @@ static char* charset;
 static char* p3p;
 static int max_age;
 
-
+/**调节表结构体*/
 typedef struct {
     char* pattern;
     long max_limit, min_limit;
@@ -97,20 +97,23 @@ typedef struct {
     off_t bytes_since_avg;
     int num_sending;
     } throttletab;
+
 static throttletab* throttles;
 static int numthrottles, maxthrottles;
 
 #define THROTTLE_NOLIMIT -1
 
-
+/**连接表结构体*/
 typedef struct {
-    int conn_state;
-    int next_free_connect;
-    httpd_conn* hc;
-    int tnums[MAXTHROTTLENUMS];         /* throttle indexes */
+    int conn_state;										//连接状态
+    int next_free_connect;								//下一个可用的连接表索引
+    httpd_conn* hc;										//http连接对象
+    int tnums[MAXTHROTTLENUMS];         				/* throttle indexes */
     int numtnums;
-    long max_limit, min_limit;
-    time_t started_at, active_at;
+    long max_limit;
+	long min_limit;
+    time_t started_at;
+	time_t active_at;
     Timer* wakeup_timer;
     Timer* linger_timer;
     long wouldblock_delay;
@@ -128,7 +131,7 @@ static int httpd_conn_count;
 #define CNST_SENDING 2
 #define CNST_PAUSING 3
 #define CNST_LINGERING 4
-
+/**连接状态*/
 
 static httpd_server* hs = (httpd_server*) 0;
 int terminate = 0;
@@ -1117,7 +1120,7 @@ static void read_config( char* filename )
 
 	/* Split line into words. */
 	while ( *cp != '\0' )
-	    {
+	{
 	    /* Find next whitespace. */
 	    cp2 = cp + strcspn( cp, " \t\n\r" );
 	    /* Insert EOS and advance next-word pointer. */
@@ -1209,8 +1212,8 @@ static void read_config( char* filename )
 		}
 	    else if ( strcasecmp( name, "host" ) == 0 )
 		{
-		value_required( name, value );
-		hostname = e_strdup( value );
+			value_required( name, value );
+			hostname = e_strdup( value );
 		}
 	    else if ( strcasecmp( name, "logfile" ) == 0 )
 		{
@@ -1219,23 +1222,23 @@ static void read_config( char* filename )
 		}
 	    else if ( strcasecmp( name, "vhost" ) == 0 )
 		{
-		no_value_required( name, value );
-		do_vhost = 1;
+			no_value_required( name, value );
+			do_vhost = 1;
 		}
 	    else if ( strcasecmp( name, "novhost" ) == 0 )
 		{
-		no_value_required( name, value );
-		do_vhost = 0;
+			no_value_required( name, value );
+			do_vhost = 0;
 		}
 	    else if ( strcasecmp( name, "globalpasswd" ) == 0 )
 		{
-		no_value_required( name, value );
-		do_global_passwd = 1;
+			no_value_required( name, value );
+			do_global_passwd = 1;
 		}
 	    else if ( strcasecmp( name, "noglobalpasswd" ) == 0 )
 		{
-		no_value_required( name, value );
-		do_global_passwd = 0;
+			no_value_required( name, value );
+			do_global_passwd = 0;
 		}
 	    else if ( strcasecmp( name, "pidfile" ) == 0 )
 		{

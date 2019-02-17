@@ -171,6 +171,7 @@ int fdwatch_get_nfiles( void )
     nfiles = getdtablesize();
 #ifdef RLIMIT_NOFILE
     /* If we have getrlimit(), use that, and attempt to raise the limit. */
+    /***getrlimit获取进程的资源限制，获取最大打开文件的数量*/
     if ( getrlimit( RLIMIT_NOFILE, &rl ) == 0 )
 	{
 	    nfiles = rl.rlim_cur;
@@ -231,8 +232,7 @@ void fdwatch_add_fd( int fd, void* client_data, int rw )
 
 
 /* Remove a descriptor from the watch list. */
-void
-fdwatch_del_fd( int fd )
+void fdwatch_del_fd( int fd )
     {
     if ( fd < 0 || fd >= nfiles || fd_rw[fd] == -1 )
 	{
@@ -288,15 +288,14 @@ void* fdwatch_get_next_client_data( void )
 
 
 /* Generate debugging statistics syslog message. */
-void
-fdwatch_logstats( long secs )
-    {
+void fdwatch_logstats( long secs )
+{
     if ( secs > 0 )
-	syslog(
-	    LOG_NOTICE, "  fdwatch - %ld %ss (%g/sec)",
-	    nwatches, WHICH, (float) nwatches / secs );
-    nwatches = 0;
+	{
+        syslog(LOG_NOTICE, "  fdwatch - %ld %ss (%g/sec)",nwatches, WHICH, (float) nwatches / secs );
     }
+    nwatches = 0;
+}
 
 
 #ifdef HAVE_KQUEUE

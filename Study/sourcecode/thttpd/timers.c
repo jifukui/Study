@@ -35,14 +35,16 @@
 
 
 #define HASH_SIZE 67
-static Timer* timers[HASH_SIZE];
-static Timer* free_timers;
-static int alloc_count, active_count, free_count;
+static Timer* timers[HASH_SIZE];//计时器数组
+static Timer* free_timers;//下一个可以使用的计时器
+static int alloc_count;//占用的计时器的数量
+static int active_count;//正在使用的计时器的数量
+static int free_count;//剩余的计时器的数量
 
 ClientData JunkClientData;
 
 
-
+/**返回当前时间的秒和微妙异或取余的值*/
 static unsigned int hash( Timer* t )
 {
     /* We can hash on the trigger time, even though it can change over
@@ -110,7 +112,7 @@ static void l_add( Timer* t )
 static void l_remove( Timer* t )
 {
     int h = t->hash;
-
+	/**判断计时器的上一个计时器是否为null*/
     if ( t->prev == (Timer*) 0 )
 	{
 		timers[h] = t->next;
@@ -140,7 +142,7 @@ static void l_resort( Timer* t )
 void tmr_init( void )
 {
     int h;
-
+	/**初始化计时器中的值并设置为0，及设置计时器中的数据为空*/
     for ( h = 0; h < HASH_SIZE; ++h )
 	{
 		timers[h] = (Timer*) 0;
@@ -169,11 +171,12 @@ Timer* tmr_create(struct timeval* nowP, TimerProc* timer_proc, ClientData client
 		}
 		++alloc_count;
 	}
-
+	/**更新计时器数据*/
     t->timer_proc = timer_proc;
     t->client_data = client_data;
     t->msecs = msecs;
     t->periodic = periodic;
+	/**根据传入的值设置t的时间*/
     if ( nowP != (struct timeval*) 0 )
 	{
 		t->time = *nowP;
@@ -199,17 +202,19 @@ Timer* tmr_create(struct timeval* nowP, TimerProc* timer_proc, ClientData client
 
 
 struct timeval* tmr_timeout( struct timeval* nowP )
-    {
+{
     long msecs;
     static struct timeval timeout;
 
     msecs = tmr_mstimeout( nowP );
     if ( msecs == INFTIM )
-	return (struct timeval*) 0;
+	{
+		return (struct timeval*) 0;
+	}
     timeout.tv_sec = msecs / 1000L;
     timeout.tv_usec = ( msecs % 1000L ) * 1000L;
     return &timeout;
-    }
+}
 
 /*设置超时时间*/
 long tmr_mstimeout( struct timeval* nowP )
@@ -297,8 +302,8 @@ void tmr_reset( struct timeval* nowP, Timer* t )
     t->time.tv_usec += ( t->msecs % 1000L ) * 1000L;
     if ( t->time.tv_usec >= 1000000L )
 	{
-	t->time.tv_sec += t->time.tv_usec / 1000000L;
-	t->time.tv_usec %= 1000000L;
+		t->time.tv_sec += t->time.tv_usec / 1000000L;
+		t->time.tv_usec %= 1000000L;
 	}
     l_resort( t );
 }
@@ -317,20 +322,18 @@ void tmr_cancel( Timer* t )
 }
 
 
-void
-tmr_cleanup( void )
-    {
+void tmr_cleanup( void )
+{
     Timer* t;
-
     while ( free_timers != (Timer*) 0 )
 	{
-	t = free_timers;
-	free_timers = t->next;
-	--free_count;
-	free( (void*) t );
-	--alloc_count;
+		t = free_timers;
+		free_timers = t->next;
+		--free_count;
+		free( (void*) t );
+		--alloc_count;
 	}
-    }
+}
 
 /*释放计时器*/
 void tmr_term( void )
@@ -349,12 +352,11 @@ void tmr_term( void )
 
 
 /* Generate debugging statistics syslog message. */
-void
-tmr_logstats( long secs )
-    {
-    syslog(
-	LOG_NOTICE, "  timers - %d allocated, %d active, %d free",
-	alloc_count, active_count, free_count );
+void tmr_logstats( long secs )
+{
+    syslog(LOG_NOTICE, "  timers - %d allocated, %d active, %d free",alloc_count, active_count, free_count );
     if ( active_count + free_count != alloc_count )
-	syslog( LOG_ERR, "timer counts don't add up!" );
-    }
+	{
+		syslog( LOG_ERR, "timer counts don't add up!" );
+	}
+}
